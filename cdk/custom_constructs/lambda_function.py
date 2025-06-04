@@ -1,6 +1,6 @@
 # Standard Library
 import os
-from typing import Optional, List
+from typing import Optional, List, Dict
 
 # Third Party
 from aws_cdk import (
@@ -20,7 +20,7 @@ class CustomLambdaFromDockerImage(Construct):
         stack_suffix: Optional[str] = "",
         memory_size: Optional[int] = 512,
         timeout: Optional[Duration] = Duration.seconds(30),
-        environment: Optional[dict] = None,
+        environment: Optional[Dict[str, str]] = None,
         layers: Optional[List[_lambda.ILayerVersion]] = None,
         initial_policy: Optional[List[iam.PolicyStatement]] = None,
         role: Optional[iam.IRole] = None,
@@ -43,7 +43,7 @@ class CustomLambdaFromDockerImage(Construct):
             Memory size for the Lambda function in MB, by default 512
         timeout : Optional[Duration], optional
             Timeout for the Lambda function, by default Duration.seconds(30)
-        environment : Optional[dict], optional
+        environment : Optional[Dict[str, str]], optional
             Environment variables for the Lambda function, by default None
         layers : Optional[List[_lambda.ILayerVersion]], optional
             List of Lambda layers to attach to the function, by default None
