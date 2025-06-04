@@ -1,5 +1,5 @@
 # Standard Library
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 
 # Third Party
 from aws_cdk import (
@@ -27,6 +27,7 @@ from cdk.custom_constructs.http_lambda_authorizer import (
 )
 from cdk.custom_constructs.s3_bucket import CustomS3Bucket, CustomCorsRule
 from cdk.custom_constructs.dynamodb_table import CustomDynamoDBTable
+from cdk.custom_constructs.cognito_user_pool import CustomCognitoUserPool
 
 
 class CartographersCloudKitStack(Stack):
@@ -431,3 +432,68 @@ class CartographersCloudKitStack(Stack):
             time_to_live_attribute=time_to_live_attribute or "ttl",
         )
         return custom_dynamodb_table.table
+
+    def create_cognito_user_pool(
+        self,
+        construct_id: str,
+        name: str,
+        self_sign_up_enabled: Optional[bool] = False,
+        sign_in_aliases: Optional[Dict[str, Any]] = None,
+        auto_verify: Optional[Dict[str, Any]] = None,
+        standard_attributes: Optional[Dict[str, Any]] = None,
+        password_policy: Optional[Dict[str, Any]] = None,
+        account_recovery: Optional[Dict[str, Any]] = None,
+    ) -> CustomCognitoUserPool:
+        """Helper method to create a Cognito User Pool.
+
+        Parameters
+        ----------
+        construct_id : str
+            The ID of the construct.
+        name : str
+            The name of the Cognito User Pool.
+        self_sign_up_enabled : Optional[bool], optional
+            Whether self sign-up is enabled, by default False
+        sign_in_aliases : Optional[Dict[str, Any]], optional
+            Sign-in aliases for the user pool, by default None
+        auto_verify : Optional[Dict[str, Any]], optional
+            Auto-verified attributes for the user pool, by default None
+        standard_attributes : Optional[Dict[str, Any]], optional
+            Standard attributes for the user pool, by default None
+        password_policy : Optional[Dict[str, Any]], optional
+            Password policy for the user pool, by default None
+        account_recovery : Optional[str], optional
+            Account recovery method, by default "EMAIL_ONLY"
+
+        Returns
+        -------
+        CustomCognitoUserPool
+            The created Cognito User Pool instance.
+        """
+        custom_cognito_user_pool = CustomCognitoUserPool(
+            scope=self,
+            id=construct_id,
+            name=name,
+            stack_suffix=self.stack_suffix,
+            self_sign_up_enabled=self_sign_up_enabled,
+            sign_in_aliases=(
+                sign_in_aliases or {"username": True, "email": True}
+            ),
+            auto_verify=auto_verify or {"email": True},
+            standard_attributes=(
+                standard_attributes or {
+                    "email": {"required": True, "mutable": True}
+                }
+            ),
+            password_policy=(
+                password_policy or {
+                    "min_length": 8,
+                    "require_lowercase": True,
+                    "require_uppercase": True,
+                    "require_digits": True,
+                    "require_symbols": False,
+                }
+            ),
+            account_recovery=account_recovery or "EMAIL_ONLY",
+        )
+        return custom_cognito_user_pool
