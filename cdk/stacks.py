@@ -12,6 +12,8 @@ from aws_cdk import (
     aws_certificatemanager as acm,
     aws_route53 as route53,
     aws_route53_targets as targets,
+    aws_s3 as s3,
+    aws_dynamodb as dynamodb,
     Duration,
     CfnOutput,
 )
@@ -23,6 +25,8 @@ from cdk.custom_constructs.http_api import CustomHttpApiGateway
 from cdk.custom_constructs.http_lambda_authorizer import (
     CustomHttpLambdaAuthorizer,
 )
+from cdk.custom_constructs.s3_bucket import CustomS3Bucket, CustomCorsRule
+from cdk.custom_constructs.dynamodb_table import CustomDynamoDBTable
 
 
 class CartographersCloudKitStack(Stack):
@@ -240,3 +244,123 @@ class CartographersCloudKitStack(Stack):
             results_cache_ttl=results_cache_ttl,
         )
         return custom_http_lambda_authorizer.authorizer
+
+    def create_s3_bucket(
+        self,
+        construct_id: str,
+        name: str,
+        versioned: Optional[bool] = False,
+        cors_rules: Optional[List[s3.CorsRule]] = None,
+    ) -> s3.Bucket:
+        """Helper method to create an S3 bucket with a specific name and versioning.
+
+        Parameters
+        ----------
+        construct_id : str
+            The ID of the construct.
+        name : str
+            The name of the S3 bucket.
+        versioned : Optional[bool], optional
+            Whether to enable versioning on the bucket, by default False
+        cors_rules : Optional[List[s3.CorsRule]], optional
+            List of CORS rules for the S3 bucket, by default None
+
+        Returns
+        -------
+        s3.Bucket
+            The created S3 bucket instance.
+        """
+        custom_s3_bucket = CustomS3Bucket(
+            scope=self,
+            id=construct_id,
+            name=name,
+            stack_suffix=self.stack_suffix,
+            versioned=versioned,
+            cors_rules=cors_rules
+        )
+        return custom_s3_bucket.bucket
+
+    def create_cors_rule(
+        self,
+        construct_id: str,
+        allowed_origins: List[str],
+        allowed_methods: Optional[List[s3.HttpMethods]] = None,
+        allowed_headers: Optional[List[str]] = None,
+        exposed_headers: Optional[List[str]] = None,
+        max_age: Optional[int] = None,
+    ) -> s3.CorsRule:
+        """Helper method to create a CORS rule for S3 buckets.
+
+        Parameters
+        ----------
+        construct_id : str
+            The ID of the construct.
+        allowed_origins : List[str]
+            List of allowed origins for CORS.
+        allowed_methods : Optional[List[s3.HttpMethods]], optional
+            List of allowed HTTP methods, by default None
+        allowed_headers : Optional[List[str]], optional
+            List of allowed headers, by default None
+        exposed_headers : Optional[List[str]], optional
+            List of exposed headers, by default None
+        max_age : Optional[int], optional
+            Maximum age in seconds for the CORS preflight response, by default
+            None
+
+        Returns
+        -------
+        s3.CorsRule
+            The created CORS rule instance.
+        """
+        custom_cors_rule = CustomCorsRule(
+            scope=self,
+            id=construct_id,
+            allowed_origins=allowed_origins,
+            allowed_methods=allowed_methods or [s3.HttpMethods.GET],
+            allowed_headers=allowed_headers or ["*"],
+            exposed_headers=exposed_headers or [],
+            max_age=max_age,
+        )
+
+        return custom_cors_rule.rule
+
+    def create_dynamodb_table(
+        self,
+        construct_id: str,
+        name: str,
+        partition_key_name: str,
+        partition_key_type: Optional[dynamodb.AttributeType] = None,
+        time_to_live_attribute: Optional[str] = None,
+    ) -> dynamodb.Table:
+        """Helper method to create a DynamoDB table with a specific name and partition key.
+
+        Parameters
+        ----------
+        construct_id : str
+            The ID of the construct.
+        name : str
+            The name of the DynamoDB table.
+        partition_key_name : str
+            The name of the partition key for the table.
+        partition_key_type : Optional[dynamodb.AttributeType], optional
+            The type of the partition key, by default dynamodb.AttributeType.STRING
+        time_to_live_attribute : Optional[str], optional
+            The attribute name for time to live (TTL) settings, by default None
+
+        Returns
+        -------
+        dynamodb.Table
+            The created DynamoDB table instance.
+        """
+        custom_dynamodb_table = CustomDynamoDBTable(
+            scope=self,
+            id=construct_id,
+            name=name,
+            partition_key=dynamodb.Attribute(
+                name=partition_key_name,
+                type=partition_key_type or dynamodb.AttributeType.STRING,
+            ),
+            stack_suffix=self.stack_suffix,
+            time_to_live_attribute=time_to_live_attribute or "ttl",
+        )
+        return custom_dynamodb_table.table
