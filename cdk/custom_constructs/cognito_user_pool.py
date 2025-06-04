@@ -47,3 +47,24 @@ class CustomCognitoUserPool(Construct):
             ),
             removal_policy=removal_policy or RemovalPolicy.DESTROY,
         )
+
+    def add_client(
+        self,
+        id: str,
+        name: str,
+        admin_user_password_auth: Optional[bool] = True,
+        user_srp_auth: Optional[bool] = True,
+        generate_secret: Optional[bool] = False,
+    ) -> cognito.UserPoolClient:
+        """
+        Add a client to the Cognito User Pool.
+        """
+        return self.user_pool.add_client(
+            id=f"{id}{self.stack_suffix}",
+            user_pool_client_name=f"{name}{self.stack_suffix}",
+            auth_flows=cognito.AuthFlow(
+                admin_user_password=admin_user_password_auth,
+                user_srp=user_srp_auth
+            ),
+            generate_secret=generate_secret,
+        )
