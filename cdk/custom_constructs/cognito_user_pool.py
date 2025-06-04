@@ -42,8 +42,8 @@ class CustomCognitoUserPool(Construct):
         super().__init__(scope, id)
 
         # Append stack suffix to name if provided
-        if stack_suffix:
-            name = f"{name}{stack_suffix}"
+        self.stack_suffix = stack_suffix or ""
+        name = f"{name}{self.stack_suffix}"
 
         # Create the Cognito User Pool
         self.user_pool = cognito.UserPool(
