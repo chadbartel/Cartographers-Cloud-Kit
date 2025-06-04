@@ -28,6 +28,8 @@ from cdk.custom_constructs.http_lambda_authorizer import (
 from cdk.custom_constructs.s3_bucket import CustomS3Bucket, CustomCorsRule
 from cdk.custom_constructs.dynamodb_table import CustomDynamoDBTable
 from cdk.custom_constructs.cognito_user_pool import CustomCognitoUserPool
+from cdk.custom_constructs.iam_role import CustomIamRole
+from cdk.custom_constructs.iam_policy_statement import CustomIAMPolicyStatement
 
 
 class CartographersCloudKitStack(Stack):
@@ -533,3 +535,81 @@ class CartographersCloudKitStack(Stack):
             account_recovery=account_recovery or "EMAIL_ONLY",
         )
         return custom_cognito_user_pool
+
+    def create_iam_role(
+        self,
+        construct_id: str,
+        name: str,
+        assumed_by: Optional[str] = "lambda.amazonaws.com",
+        managed_policies: Optional[List[iam.IManagedPolicy]] = None,
+        inline_policies: Optional[List[iam.Policy]] = None,
+    ) -> CustomIamRole:
+        """Helper method to create an IAM Role.
+
+        Parameters
+        ----------
+        construct_id : str
+            The ID of the construct.
+        name : str
+            The name of the IAM Role.
+        assumed_by : Optional[str], optional
+            The principal that can assume this role, by default
+            "lambda.amazonaws.com"
+        managed_policies : Optional[List[iam.IManagedPolicy]], optional
+            List of managed policies to attach to the role, by default None
+        inline_policies : Optional[List[iam.Policy]], optional
+            List of inline policies to attach to the role, by default None
+
+        Returns
+        -------
+        CustomIamRole
+            The created IAM Role instance.
+        """
+        custom_iam_role = CustomIamRole(
+            scope=self,
+            id=construct_id,
+            name=name,
+            stack_suffix=self.stack_suffix,
+            assumed_by=assumed_by,
+            managed_policies=managed_policies,
+            inline_policies=inline_policies,
+        )
+        return custom_iam_role
+
+    def create_iam_policy_statement(
+        self,
+        construct_id: str,
+        actions: List[str],
+        resources: List[str],
+        effect: Optional[iam.Effect] = iam.Effect.ALLOW,
+        conditions: Optional[dict] = None,
+    ) -> CustomIAMPolicyStatement:
+        """Helper method to create an IAM Policy Statement.
+
+        Parameters
+        ----------
+        construct_id : str
+            The ID of the construct.
+        actions : List[str]
+            List of IAM actions to allow or deny.
+        resources : List[str]
+            List of resources the actions apply to.
+        effect : Optional[iam.Effect], optional
+            The effect of the policy statement, by default iam.Effect.ALLOW
+        conditions : Optional[dict], optional
+            Conditions for the policy statement, by default None
+
+        Returns
+        -------
+        CustomIAMPolicyStatement
+            The created IAM Policy Statement instance.
+        """
+        custom_iam_policy_statement = CustomIAMPolicyStatement(
+            scope=self,
+            id=construct_id,
+            actions=actions,
+            resources=resources,
+            effect=effect,
+            conditions=conditions or {},
+        )
+        return custom_iam_policy_statement
