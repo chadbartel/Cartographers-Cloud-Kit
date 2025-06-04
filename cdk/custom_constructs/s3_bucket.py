@@ -16,7 +16,7 @@ class CustomS3Bucket(Construct):
         versioned: Optional[bool] = False,
         cors_rules: Optional[List[s3.CorsRule]] = None,
         lifecycle_rules: Optional[List[s3.LifecycleRule]] = None,
-        block_public_access: s3.BlockPublicAccess = s3.BlockPublicAccess.BLOCK_ALL,
+        block_public_access: Optional[s3.BlockPublicAccess] = s3.BlockPublicAccess.BLOCK_ALL,
         event_bridge_enabled: Optional[bool] = False,
         **kwargs,
     ) -> None:
@@ -38,8 +38,9 @@ class CustomS3Bucket(Construct):
             CORS rules for the S3 bucket, by default None
         lifecycle_rules : Optional[List[s3.LifecycleRule]], optional
             Lifecycle rules for the S3 bucket, by default None
-        block_public_access : s3.BlockPublicAccess, optional
-            Block public access settings for the S3 bucket, by default s3.BlockPublicAccess.BLOCK_ALL
+        block_public_access : Optional[s3.BlockPublicAccess], optional
+            Block public access settings for the S3 bucket, by default
+            s3.BlockPublicAccess.BLOCK_ALL
         event_bridge_enabled : Optional[bool], optional
             Whether to enable EventBridge for the S3 bucket, by default False
         """
