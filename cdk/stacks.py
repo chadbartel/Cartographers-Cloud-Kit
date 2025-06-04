@@ -44,7 +44,7 @@ class AutomatedTaskmasterStack(Stack):
         # region Lambda Functions
         # Backend Lambda Function
         taskmaster_backend_lambda = self.create_lambda_function(
-            construct_id="TaskmasterBackendLambda",
+            construct_id="CartographersCloudKitLambda",
             src_folder_path="cck-api-backend",
             environment={
                 "API_PREFIX": self.api_prefix,
@@ -57,10 +57,10 @@ class AutomatedTaskmasterStack(Stack):
 
         # region HTTP API Gateway
         # Create a custom HTTP API Gateway
-        taskmaster_api = CustomHttpApiGateway(
+        cartographer_cloud_kit_api = CustomHttpApiGateway(
             scope=self,
-            id="TaskmasterHttpApi",
-            name="automated-taskmaster-api",
+            id="CartographersCloudKitHttpApi",
+            name="cartographers-cloud-kit-api",
             stack_suffix=self.stack_suffix,
             allow_methods=[apigwv2.CorsHttpMethod.ANY],
             allow_headers=["Content-Type", "Authorization", "*"],
@@ -75,7 +75,7 @@ class AutomatedTaskmasterStack(Stack):
         )
 
         # Create proxy route for the API
-        taskmaster_api.add_routes(
+        cartographer_cloud_kit_api.add_routes(
             path="/".join([self.api_prefix, "{proxy+}"]),
             methods=[apigwv2.HttpMethod.ANY],
             integration=taskmaster_integration,
@@ -85,7 +85,9 @@ class AutomatedTaskmasterStack(Stack):
         # region Custom Domain Setup for API Gateway
         # 1. Look up existing hosted zone for "thatsmidnight.com"
         hosted_zone = route53.HostedZone.from_lookup(
-            self, "ArcaneScribeHostedZone", domain_name=self.base_domain_name
+            self,
+            "CartographersCloudKitHostedZone",
+            domain_name=self.base_domain_name,
         )
 
         # 2. Create an ACM certificate for subdomain with DNS validation
@@ -105,7 +107,7 @@ class AutomatedTaskmasterStack(Stack):
         )
 
         # 4. Map HTTP API to this custom domain
-        default_stage = taskmaster_api.default_stage
+        default_stage = cartographer_cloud_kit_api.default_stage
         if not default_stage:
             raise ValueError(
                 "Default stage could not be found for API mapping. Ensure API has a default stage or specify one."
@@ -114,7 +116,7 @@ class AutomatedTaskmasterStack(Stack):
         _ = apigwv2.ApiMapping(
             self,
             "ApiMapping",
-            api=taskmaster_api,
+            api=cartographer_cloud_kit_api,
             domain_name=apigw_custom_domain,
             stage=default_stage,  # Use the actual default stage object
         )
@@ -141,7 +143,7 @@ class AutomatedTaskmasterStack(Stack):
             value=f"https://{self.full_domain_name}",
             description="Custom API URL for Cartographers Cloud Kit",
             export_name=(
-                f"automated-taskmaster-custom-api-url{self.stack_suffix}"
+                f"cartographers-cloud-kit-custom-api-url{self.stack_suffix}"
             ),
         )
         # endregion
