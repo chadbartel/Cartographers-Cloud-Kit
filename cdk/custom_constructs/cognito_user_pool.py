@@ -1,17 +1,4 @@
-import os
-from aws_cdk import (
-    Stack,
-    aws_s3 as s3,
-    aws_dynamodb as dynamodb,
-    aws_apigateway as apigw, # Using REST API for TokenAuthorizer
-    aws_lambda as _lambda,  # For defining Lambda functions
-    aws_iam as iam,
-    aws_cognito as cognito, # Import Cognito
-    RemovalPolicy,
-    Duration,
-    CfnOutput,
-    Fn # For Fn.import_value if needed, not used in this direct setup
-)
+from aws_cdk import aws_cognito as cognito, RemovalPolicy
 from constructs import Construct
 from typing import Optional, Dict, Union, Any
 
