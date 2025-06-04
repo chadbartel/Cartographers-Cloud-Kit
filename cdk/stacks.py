@@ -45,6 +45,68 @@ class CartographersCloudKitStack(Stack):
         self.api_prefix = self.node.try_get_context("api_prefix") or "/api/v1"
         # endregion
 
+        # region S3 Bucket for Static Assets
+        # Create CORS rules for the S3 bucket
+        asset_bucket_cors_rules = [
+            self.create_cors_rule(
+                construct_id="AssetBucketCorsRule",
+                allowed_methods=[
+                    s3.HttpMethods.GET,
+                    s3.HttpMethods.PUT,
+                    s3.HttpMethods.POST,
+                    s3.HttpMethods.HEAD,
+                ],
+                allowed_origins=["*"],
+                allowed_headers=["*"],
+                max_age=3000,
+            )
+        ]
+
+        # Create a custom S3 bucket for static assets
+        asset_bucket = self.create_s3_bucket(
+            construct_id="CartographersCloudKitAssetBucket",
+            name="cartographers-cloud-kit-assets",
+            versioned=True,
+            cors_rules=asset_bucket_cors_rules,
+        )
+
+        # Output asset bucket name
+        CfnOutput(
+            self,
+            "AssetBucketNameOutput",
+            value=asset_bucket.bucket_name,
+            description=(
+                "S3 bucket name for Cartographers Cloud Kit static assets"
+            ),
+            export_name=(
+                f"cartographers-cloud-kit-asset-bucket-name{self.stack_suffix}"
+            ),
+        )
+        # endregion
+
+        # region DynamoDB Table for Metadata
+        # Create a DynamoDB table for storing metadata
+        metadata_table = self.create_dynamodb_table(
+            construct_id="AssetMetadataTable",
+            name="cartographers-cloud-kit-metadata",
+            partition_key_name="asset_id",
+            partition_key_type=dynamodb.AttributeType.STRING,
+        )
+
+        # Output metadata table name
+        CfnOutput(
+            self,
+            "MetadataTableNameOutput",
+            value=metadata_table.table_name,
+            description=(
+                "DynamoDB table name for Cartographers Cloud Kit metadata"
+            ),
+            export_name=(
+                f"cartographers-cloud-kit-metadata-table-name{self.stack_suffix}"
+            ),
+        )
+        # endregion
+
         # region Lambda Functions
         # Backend Lambda Function
         taskmaster_backend_lambda = self.create_lambda_function(
