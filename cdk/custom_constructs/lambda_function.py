@@ -71,7 +71,6 @@ class CustomLambdaFromDockerImage(Construct):
             "LOG_LEVEL": "INFO",
             "POWERTOOLS_LOGGER_SAMPLE_RATE": "0.1",
             "POWERTOOLS_LOGGER_LOG_EVENT": "true",
-            "POWERTOOLS_METRICS_NAMESPACE": "ArcaneScribeApp",
             "POWERTOOLS_TRACER_CAPTURE_RESPONSE": "true",
             "POWERTOOLS_TRACER_CAPTURE_ERROR": "true",
         }
