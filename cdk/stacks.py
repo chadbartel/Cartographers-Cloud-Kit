@@ -158,6 +158,36 @@ class CartographersCloudKitStack(Stack):
             timeout=Duration.seconds(30),
             description="Cartographers Cloud Kit backend Lambda function",
         )
+
+        # Authorizer Lambda Function
+        # Create authorizer Lambda role
+        authorizer_lambda_role = self.create_iam_role(
+            construct_id="AuthorizerLambdaRole",
+            name="cartographers-cloud-kit-authorizer-role",
+        ).role
+
+        # Grant permission to call AdminInitiateAuth on the user pool
+        authorizer_lambda_role.add_to_policy(
+            self.create_iam_policy_statement(
+                construct_id="AuthorizerLambdaAdminAuthPolicy",
+                actions=["cognito-idp:AdminInitiateAuth"],
+                resources=[user_pool.user_pool.user_pool_arn],
+            ).statement
+        )
+
+        # Create the authorizer Lambda function
+        authorizer_lambda = self.create_lambda_function(
+            construct_id="CartographersCloudKitAuthorizerLambda",
+            src_folder_path="cck-api-authorizer",
+            environment={
+                "USER_POOL_ID": user_pool.user_pool.user_pool_id,
+                "USER_POOL_CLIENT_ID": user_pool_client.user_pool_client_id,
+            },
+            memory_size=256,
+            timeout=Duration.seconds(10),
+            role=authorizer_lambda_role,
+            description="Cartographers Cloud Kit authorizer Lambda function",
+        )
         # endregion
 
         # region HTTP API Gateway
