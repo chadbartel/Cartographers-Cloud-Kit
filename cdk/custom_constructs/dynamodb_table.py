@@ -1,5 +1,5 @@
 # Standard Library
-from typing import Optional
+from typing import Optional, List, Any, Dict
 
 # Third Party
 from aws_cdk import aws_dynamodb as dynamodb, RemovalPolicy
@@ -14,9 +14,11 @@ class CustomDynamoDBTable(Construct):
         name: str,
         partition_key: dynamodb.Attribute,
         stack_suffix: Optional[str] = "",
+        billing_mode: Optional[dynamodb.BillingMode] = dynamodb.BillingMode.PAY_PER_REQUEST,
         sort_key: Optional[dynamodb.Attribute] = None,
         removal_policy: Optional[RemovalPolicy] = RemovalPolicy.DESTROY,
         time_to_live_attribute: Optional[str] = None,
+        global_secondary_indexes: Optional[List[Dict[str, Any]]] = None,
         **kwargs,
     ) -> None:
         """Custom DynamoDB Table Construct for AWS CDK.
@@ -33,6 +35,9 @@ class CustomDynamoDBTable(Construct):
             The partition key for the DynamoDB table.
         stack_suffix : Optional[str], optional
             Suffix to append to the DynamoDB table name, by default ""
+        billing_mode : Optional[dynamodb.BillingMode], optional
+            The billing mode for the DynamoDB table, by default
+            dynamodb.BillingMode.PAY_PER_REQUEST
         sort_key : Optional[dynamodb.Attribute], optional
             The sort key for the DynamoDB table, by default None
         removal_policy : Optional[RemovalPolicy], optional
@@ -41,6 +46,8 @@ class CustomDynamoDBTable(Construct):
         time_to_live_attribute : Optional[str], optional
             The attribute name for time to live (TTL) in the DynamoDB table,
             by default None (no TTL configured)
+        global_secondary_indexes : Optional[List[Any]], optional
+            List of global secondary indexes for the DynamoDB table, by default None
         """
         super().__init__(scope, id, **kwargs)
 
@@ -56,6 +63,11 @@ class CustomDynamoDBTable(Construct):
             partition_key=partition_key,
             sort_key=sort_key,
             removal_policy=removal_policy,
-            billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
+            billing_mode=billing_mode,
             time_to_live_attribute=time_to_live_attribute,
         )
+
+        # Add global secondary indexes if provided
+        if global_secondary_indexes:
+            for gsi_props in global_secondary_indexes:
+                self.table.add_global_secondary_index(**gsi_props)
