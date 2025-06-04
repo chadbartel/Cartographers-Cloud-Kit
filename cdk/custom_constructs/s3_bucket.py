@@ -14,7 +14,9 @@ class CustomS3Bucket(Construct):
         name: str,
         stack_suffix: Optional[str] = "",
         versioned: Optional[bool] = False,
+        cors_rules: Optional[List[s3.CorsRule]] = None,
         lifecycle_rules: Optional[List[s3.LifecycleRule]] = None,
+        block_public_access: s3.BlockPublicAccess = s3.BlockPublicAccess.BLOCK_ALL,
         event_bridge_enabled: Optional[bool] = False,
         **kwargs,
     ) -> None:
@@ -32,8 +34,12 @@ class CustomS3Bucket(Construct):
             Suffix to append to the S3 bucket name, by default ""
         versioned : Optional[bool], optional
             Whether the S3 bucket should be versioned, by default False
+        cors_rules : Optional[List[s3.CorsRule]], optional
+            CORS rules for the S3 bucket, by default None
         lifecycle_rules : Optional[List[s3.LifecycleRule]], optional
             Lifecycle rules for the S3 bucket, by default None
+        block_public_access : s3.BlockPublicAccess, optional
+            Block public access settings for the S3 bucket, by default s3.BlockPublicAccess.BLOCK_ALL
         event_bridge_enabled : Optional[bool], optional
             Whether to enable EventBridge for the S3 bucket, by default False
         """
@@ -42,6 +48,10 @@ class CustomS3Bucket(Construct):
         # Append stack suffix to name if provided
         if stack_suffix:
             name = f"{name}{stack_suffix}"
+
+        # Truncate name to 63 characters if it exceeds the limit
+        if len(name) > 63:
+            name = name[:63]
 
         # Set default lifecycle rules if not provided
         if lifecycle_rules is None:
@@ -70,9 +80,10 @@ class CustomS3Bucket(Construct):
             self,
             "DefaultBucket",
             bucket_name=name,
+            cors=cors_rules,
             versioned=versioned,
             encryption=s3.BucketEncryption.S3_MANAGED,
-            block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
+            block_public_access=block_public_access,
             enforce_ssl=True,
             removal_policy=RemovalPolicy.DESTROY,
             auto_delete_objects=True,
