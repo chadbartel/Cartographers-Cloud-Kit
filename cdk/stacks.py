@@ -159,6 +159,10 @@ class CartographersCloudKitStack(Stack):
             description="Cartographers Cloud Kit backend Lambda function",
         )
 
+        # Grant permissions to the Lambda function
+        asset_bucket.grant_read_write(cck_backend_lambda)
+        metadata_table.grant_read_write_data(cck_backend_lambda)
+
         # Authorizer Lambda Function
         # Create authorizer Lambda role
         authorizer_lambda_role = self.create_iam_role(
