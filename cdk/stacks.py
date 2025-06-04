@@ -148,7 +148,7 @@ class CartographersCloudKitStack(Stack):
 
         # region Lambda Functions
         # Backend Lambda Function
-        taskmaster_backend_lambda = self.create_lambda_function(
+        cck_backend_lambda = self.create_lambda_function(
             construct_id="CartographersCloudKitLambda",
             src_folder_path="cck-api-backend",
             environment={
@@ -206,7 +206,7 @@ class CartographersCloudKitStack(Stack):
 
         # Create Lambda integration for the API
         taskmaster_integration = apigwv2_integrations.HttpLambdaIntegration(
-            "TaskmasterIntegration", handler=taskmaster_backend_lambda
+            "CartographersCloudKitIntegration", handler=cck_backend_lambda
         )
 
         # Create proxy route for the API
