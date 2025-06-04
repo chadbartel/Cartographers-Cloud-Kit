@@ -90,3 +90,45 @@ class CustomS3Bucket(Construct):
             lifecycle_rules=lifecycle_rules,
             event_bridge_enabled=event_bridge_enabled,
         )
+
+
+class CustomCorsRule(Construct):
+    def __init__(
+        self,
+        scope: Construct,
+        id: str,
+        allowed_methods: Optional[List[s3.HttpMethods]] = None,
+        allowed_origins: Optional[List[str]] = None,
+        allowed_headers: Optional[List[str]] = None,
+        max_age: Optional[int] = None,
+        **kwargs,
+    ) -> None:
+        """Custom CORS Rule Construct for AWS CDK S3 Buckets.
+
+        Parameters
+        ----------
+        scope : Construct
+            The scope in which this construct is defined.
+        id : str
+            The ID of the construct.
+        allowed_methods : Optional[List[s3.HttpMethods]], optional
+            List of allowed HTTP methods for CORS, by default None
+        allowed_origins : Optional[List[str]], optional
+            List of allowed origins for CORS, by default None
+        allowed_headers : Optional[List[str]], optional
+            List of allowed headers for CORS, by default None
+        max_age : Optional[int], optional
+            Maximum age in seconds for the CORS preflight response, by default
+            None
+        """
+        super().__init__(scope, id, **kwargs)
+
+        # Create a CORS rule for S3 bucket
+        self.rule = s3.CorsRule(
+            allowed_methods=allowed_methods or [
+                s3.HttpMethods.GET, s3.HttpMethods.PUT
+            ],
+            allowed_origins=allowed_origins or ["*"],
+            allowed_headers=allowed_headers or ["*"],
+            max_age=max_age,
+        )
