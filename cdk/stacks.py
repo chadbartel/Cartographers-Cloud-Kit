@@ -286,7 +286,6 @@ class CartographersCloudKitStack(Stack):
         allowed_origins: List[str],
         allowed_methods: Optional[List[s3.HttpMethods]] = None,
         allowed_headers: Optional[List[str]] = None,
-        exposed_headers: Optional[List[str]] = None,
         max_age: Optional[int] = None,
     ) -> s3.CorsRule:
         """Helper method to create a CORS rule for S3 buckets.
@@ -301,8 +300,6 @@ class CartographersCloudKitStack(Stack):
             List of allowed HTTP methods, by default None
         allowed_headers : Optional[List[str]], optional
             List of allowed headers, by default None
-        exposed_headers : Optional[List[str]], optional
-            List of exposed headers, by default None
         max_age : Optional[int], optional
             Maximum age in seconds for the CORS preflight response, by default
             None
@@ -318,7 +315,6 @@ class CartographersCloudKitStack(Stack):
             allowed_origins=allowed_origins,
             allowed_methods=allowed_methods or [s3.HttpMethods.GET],
             allowed_headers=allowed_headers or ["*"],
-            exposed_headers=exposed_headers or [],
             max_age=max_age,
         )
 
