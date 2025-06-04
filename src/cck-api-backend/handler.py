@@ -26,7 +26,7 @@ app = FastAPI(
 )
 
 # Add the API router to the FastAPI app
-app.include_router(router, prefix=api_prefix)
+# app.include_router(router, prefix=api_prefix)
 
 # Initialize Mangum handler globally
 # This instance will be reused across invocations in a warm Lambda environment.
