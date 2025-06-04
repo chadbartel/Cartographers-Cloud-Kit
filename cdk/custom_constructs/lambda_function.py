@@ -4,7 +4,7 @@ from typing import Optional, List, Dict
 
 # Third Party
 from aws_cdk import (
-    aws_lambda as _lambda,
+    aws_lambda as lambda_,
     aws_iam as iam,
     Duration,
 )
@@ -21,7 +21,7 @@ class CustomLambdaFromDockerImage(Construct):
         memory_size: Optional[int] = 512,
         timeout: Optional[Duration] = Duration.seconds(30),
         environment: Optional[Dict[str, str]] = None,
-        layers: Optional[List[_lambda.ILayerVersion]] = None,
+        layers: Optional[List[lambda_.ILayerVersion]] = None,
         initial_policy: Optional[List[iam.PolicyStatement]] = None,
         role: Optional[iam.IRole] = None,
         description: Optional[str] = None,
@@ -45,7 +45,7 @@ class CustomLambdaFromDockerImage(Construct):
             Timeout for the Lambda function, by default Duration.seconds(30)
         environment : Optional[Dict[str, str]], optional
             Environment variables for the Lambda function, by default None
-        layers : Optional[List[_lambda.ILayerVersion]], optional
+        layers : Optional[List[lambda_.ILayerVersion]], optional
             List of Lambda layers to attach to the function, by default None
         initial_policy : Optional[List[iam.PolicyStatement]], optional
             Initial IAM policy statements to attach to the Lambda function,
@@ -80,13 +80,13 @@ class CustomLambdaFromDockerImage(Construct):
             powertools_env_vars.update(environment)
 
         # Build Lambda package using Docker
-        self.function = _lambda.Function(
+        self.function = lambda_.Function(
             self,
             "DefaultFunction",
             function_name=name,
-            runtime=_lambda.Runtime.FROM_IMAGE,
-            handler=_lambda.Handler.FROM_IMAGE,
-            code=_lambda.Code.from_asset_image(
+            runtime=lambda_.Runtime.FROM_IMAGE,
+            handler=lambda_.Handler.FROM_IMAGE,
+            code=lambda_.Code.from_asset_image(
                 directory=code_path,
                 # This assumes a Dockerfile is present in the src folder
             ),
