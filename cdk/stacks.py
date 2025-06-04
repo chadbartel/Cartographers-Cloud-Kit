@@ -46,6 +46,42 @@ class CartographersCloudKitStack(Stack):
         self.api_prefix = self.node.try_get_context("api_prefix") or "/api/v1"
         # endregion
 
+        # region Cognito User Pool for Authentication
+        # Create a Cognito User Pool for authentication
+        user_pool = self.create_cognito_user_pool(
+            construct_id="CartographersCloudKitUserPool",
+            name="cartographers-cloud-kit-user-pool",
+        )
+
+        # Create user pool client for authorizer Lambda
+        user_pool_client = user_pool.add_client(
+            id="CartographersCloudKitUserPoolClient",
+            name="cartographers-cloud-kit-client",
+        )
+
+        # Output user pool ID and client ID
+        CfnOutput(
+            self,
+            "UserPoolIdOutput",
+            value=user_pool.user_pool.user_pool_id,
+            description="Cognito User Pool ID for Cartographers Cloud Kit",
+            export_name=(
+                f"cartographers-cloud-kit-user-pool-id{self.stack_suffix}"
+            ),
+        )
+        CfnOutput(
+            self,
+            "UserPoolClientIdOutput",
+            value=user_pool_client.user_pool_client_id,
+            description=(
+                "Cognito User Pool Client ID for Cartographers Cloud Kit"
+            ),
+            export_name=(
+                f"cartographers-cloud-kit-user-pool-client-id{self.stack_suffix}"
+            ),
+        )
+        # endregion
+
         # region S3 Bucket for Static Assets
         # Create CORS rules for the S3 bucket
         asset_bucket_cors_rules = [
