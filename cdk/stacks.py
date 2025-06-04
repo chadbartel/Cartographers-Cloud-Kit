@@ -25,7 +25,7 @@ from cdk.custom_constructs.http_lambda_authorizer import (
 )
 
 
-class AutomatedTaskmasterStack(Stack):
+class CartographersCloudKitStack(Stack):
     def __init__(
         self, scope: Construct, construct_id: str, stack_suffix: str, **kwargs
     ) -> None:
