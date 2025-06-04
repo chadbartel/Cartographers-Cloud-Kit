@@ -205,15 +205,18 @@ class CartographersCloudKitStack(Stack):
         # TODO: Create an authorizer for the HTTP API
 
         # Create Lambda integration for the API
-        taskmaster_integration = apigwv2_integrations.HttpLambdaIntegration(
-            "CartographersCloudKitIntegration", handler=cck_backend_lambda
+        cartographer_cloud_kit_integration = (
+            apigwv2_integrations.HttpLambdaIntegration(
+                "CartographersCloudKitIntegration",
+                handler=cck_backend_lambda,
+            )
         )
 
         # Create proxy route for the API
         cartographer_cloud_kit_api.add_routes(
             path="/".join([self.api_prefix, "{proxy+}"]),
             methods=[apigwv2.HttpMethod.ANY],
-            integration=taskmaster_integration,
+            integration=cartographer_cloud_kit_integration,
         )
         # endregion
 
