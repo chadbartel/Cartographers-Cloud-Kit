@@ -138,9 +138,8 @@ class CartographersCloudKitStack(Stack):
                 )
             ),
         )
-        # endregion
 
-        # region Outputs
+        # 6. Output the custom API URL
         CfnOutput(
             self,
             "CustomApiUrlOutput",
