@@ -248,7 +248,6 @@ class CartographersCloudKitStack(Stack):
         rest_api = self.create_rest_api_gateway(
             construct_id="CartographersCloudKitRestApi",
             name="cartographers-cloud-kit-rest-api",
-            authorizer=api_authorizer,
         ).api
 
         # Define the Lambda integration for the REST API
