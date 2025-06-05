@@ -6,7 +6,7 @@ import os
 import aws_cdk as cdk
 
 # Local Modules
-from cdk.stacks import CartographersCloudKitStack
+from cdk import CartographersCloudKitStack
 
 # Initialize the CDK application
 app = cdk.App()
