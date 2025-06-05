@@ -11,8 +11,11 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt -t .
 
-# Copy the main handler file (e.g., your FastAPI app definition)
+# Copy the main handler file
 COPY handler.py .
+
+# Copy the additional files needed for the Lambda function
+COPY ./api_authorizer ./api_authorizer/
 
 # Set the CMD to your handler function within handler.py
 CMD [ "handler.lambda_handler" ]
