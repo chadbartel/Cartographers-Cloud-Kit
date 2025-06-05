@@ -20,16 +20,17 @@ from aws_cdk import (
 from constructs import Construct
 
 # Local Modules
-from cdk.custom_constructs.lambda_function import CustomLambdaFromDockerImage
-from cdk.custom_constructs.http_api import CustomHttpApiGateway
-from cdk.custom_constructs.http_lambda_authorizer import (
+from cdk.custom_constructs import (
+    CustomHttpApiGateway,
     CustomHttpLambdaAuthorizer,
+    CustomCognitoUserPool,
+    CustomDynamoDBTable,
+    CustomS3Bucket,
+    CustomCorsRule,
+    CustomLambdaFromDockerImage,
+    CustomIamRole,
+    CustomIAMPolicyStatement,
 )
-from cdk.custom_constructs.s3_bucket import CustomS3Bucket, CustomCorsRule
-from cdk.custom_constructs.dynamodb_table import CustomDynamoDBTable
-from cdk.custom_constructs.cognito_user_pool import CustomCognitoUserPool
-from cdk.custom_constructs.iam_role import CustomIamRole
-from cdk.custom_constructs.iam_policy_statement import CustomIAMPolicyStatement
 
 
 class CartographersCloudKitStack(Stack):
