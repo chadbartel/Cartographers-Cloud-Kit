@@ -7,7 +7,6 @@ from aws_cdk import (
     aws_iam as iam,
     aws_lambda as lambda_,
     aws_apigateway as apigw,
-    aws_apigatewayv2 as apigwv2,
     aws_certificatemanager as acm,
     aws_route53 as route53,
     aws_route53_targets as targets,
