@@ -500,7 +500,6 @@ class CartographersCloudKitStack(Stack):
         auto_verify: Optional[Dict[str, Any]] = None,
         standard_attributes: Optional[Dict[str, Any]] = None,
         password_policy: Optional[Dict[str, Any]] = None,
-        account_recovery: Optional[Dict[str, Any]] = None,
     ) -> CustomCognitoUserPool:
         """Helper method to create a Cognito User Pool.
 
@@ -552,7 +551,6 @@ class CartographersCloudKitStack(Stack):
                     "require_symbols": False,
                 }
             ),
-            account_recovery=account_recovery or "EMAIL_ONLY",
         )
         return custom_cognito_user_pool
 
