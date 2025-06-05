@@ -667,7 +667,7 @@ class CartographersCloudKitStack(Stack):
             name=name,
             stack_suffix=self.stack_suffix,
             description="Cartographers Cloud Kit REST API",
-            stage_name=self.stack_suffix or "prod",
+            stage_name=self.stack_suffix.strip("-") or "prod",
             tracing_enabled=tracing_enabled,
             data_trace_enabled=data_trace_enabled,
             metrics_enabled=metrics_enabled,
