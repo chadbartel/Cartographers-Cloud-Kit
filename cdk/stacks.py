@@ -295,7 +295,6 @@ class CartographersCloudKitStack(Stack):
             integration=lambda_integration,
             authorizer=api_authorizer,  # Use the authorizer for all other routes
         )
-        # endregion
 
         # Output the REST API URL
         CfnOutput(
