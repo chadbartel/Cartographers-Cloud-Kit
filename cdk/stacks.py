@@ -278,6 +278,16 @@ class CartographersCloudKitStack(Stack):
                     current_resource = current_resource.add_resource(path_part)
             api_base_resource = current_resource  # This is now /api/v1 resource
 
+        # Add specific documentation routes WITHOUT the authorizer
+        docs_paths = ["docs", "redoc", "openapi.json"]
+        for doc_path in docs_paths:
+            doc_resource = api_base_resource.add_resource(doc_path)
+            doc_resource.add_method(
+                "GET",
+                integration=lambda_integration,
+                authorizer=None,  # No authorizer for documentation routes
+            )
+
         # Add {proxy+} resource integration to the REST API
         rest_api.root.add_proxy(
             default_integration=lambda_integration,
