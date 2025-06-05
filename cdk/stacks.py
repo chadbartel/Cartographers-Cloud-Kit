@@ -187,7 +187,6 @@ class CartographersCloudKitStack(Stack):
             environment={
                 "USER_POOL_ID": user_pool.user_pool.user_pool_id,
                 "USER_POOL_CLIENT_ID": user_pool_client.user_pool_client_id,
-                "AUTH_HEADER_NAME_FOR_API": self.auth_header_name,
             },
             memory_size=256,
             timeout=Duration.seconds(10),
