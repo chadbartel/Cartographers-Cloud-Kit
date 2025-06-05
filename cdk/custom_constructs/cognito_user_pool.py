@@ -1,6 +1,9 @@
+# Standard Library
+from typing import Optional, Dict, Union, Any
+
+# Third Party
 from aws_cdk import aws_cognito as cognito, RemovalPolicy
 from constructs import Construct
-from typing import Optional, Dict, Union, Any
 
 
 class CustomCognitoUserPool(Construct):
@@ -64,7 +67,7 @@ class CustomCognitoUserPool(Construct):
             user_pool_client_name=f"{name}{self.stack_suffix}",
             auth_flows=cognito.AuthFlow(
                 admin_user_password=admin_user_password_auth,
-                user_srp=user_srp_auth
+                user_srp=user_srp_auth,
             ),
             generate_secret=generate_secret,
         )

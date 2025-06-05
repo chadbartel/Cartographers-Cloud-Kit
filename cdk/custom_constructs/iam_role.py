@@ -45,7 +45,8 @@ class CustomIamRole(Construct):
             id=f"DefaultRole{stack_suffix}",
             role_name=f"{name}{stack_suffix}",
             assumed_by=iam.ServicePrincipal(assumed_by),
-            managed_policies=managed_policies or [
+            managed_policies=managed_policies
+            or [
                 iam.ManagedPolicy.from_aws_managed_policy_name(
                     "service-role/AWSLambdaBasicExecutionRole"
                 )

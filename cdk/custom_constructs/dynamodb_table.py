@@ -14,7 +14,9 @@ class CustomDynamoDBTable(Construct):
         name: str,
         partition_key: dynamodb.Attribute,
         stack_suffix: Optional[str] = "",
-        billing_mode: Optional[dynamodb.BillingMode] = dynamodb.BillingMode.PAY_PER_REQUEST,
+        billing_mode: Optional[
+            dynamodb.BillingMode
+        ] = dynamodb.BillingMode.PAY_PER_REQUEST,
         sort_key: Optional[dynamodb.Attribute] = None,
         removal_policy: Optional[RemovalPolicy] = RemovalPolicy.DESTROY,
         time_to_live_attribute: Optional[str] = None,

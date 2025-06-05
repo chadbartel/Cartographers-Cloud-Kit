@@ -16,7 +16,9 @@ class CustomS3Bucket(Construct):
         versioned: Optional[bool] = False,
         cors_rules: Optional[List[s3.CorsRule]] = None,
         lifecycle_rules: Optional[List[s3.LifecycleRule]] = None,
-        block_public_access: Optional[s3.BlockPublicAccess] = s3.BlockPublicAccess.BLOCK_ALL,
+        block_public_access: Optional[
+            s3.BlockPublicAccess
+        ] = s3.BlockPublicAccess.BLOCK_ALL,
         event_bridge_enabled: Optional[bool] = False,
         **kwargs,
     ) -> None:
@@ -126,9 +128,8 @@ class CustomCorsRule(Construct):
 
         # Create a CORS rule for S3 bucket
         self.rule = s3.CorsRule(
-            allowed_methods=allowed_methods or [
-                s3.HttpMethods.GET, s3.HttpMethods.PUT
-            ],
+            allowed_methods=allowed_methods
+            or [s3.HttpMethods.GET, s3.HttpMethods.PUT],
             allowed_origins=allowed_origins or ["*"],
             allowed_headers=allowed_headers or ["*"],
             max_age=max_age,
