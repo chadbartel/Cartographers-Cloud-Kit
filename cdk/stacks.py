@@ -47,7 +47,7 @@ class CartographersCloudKitStack(Stack):
             f"{self.subdomain_part}{self.stack_suffix}.{self.base_domain_name}"
         )
         self.api_prefix = self.node.try_get_context("api_prefix") or "/api/v1"
-        self.header_name = "x-cck-username-password"
+        self.auth_header_name = "x-cck-username-password"
         # endregion
 
         # region Cognito User Pool for Authentication
