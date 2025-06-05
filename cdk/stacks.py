@@ -289,8 +289,11 @@ class CartographersCloudKitStack(Stack):
             )
 
         # Add {proxy+} resource integration to the REST API
-        rest_api.root.add_proxy(
-            default_integration=lambda_integration,
+        api_proxy_resource = api_base_resource.add_resource("{proxy+}")
+        api_proxy_resource.add_method(
+            "ANY",
+            integration=lambda_integration,
+            authorizer=api_authorizer,  # Use the authorizer for all other routes
         )
         # endregion
 
