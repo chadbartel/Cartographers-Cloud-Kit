@@ -41,7 +41,7 @@ class CartographersCloudKitStack(Stack):
         # region Stack Suffix and Subdomain Configuration
         self.stack_suffix = (stack_suffix if stack_suffix else "").lower()
         self.base_domain_name = "thatsmidnight.com"
-        self.subdomain_part = "cartogphers-cloud-kit"
+        self.subdomain_part = "cartographers-cloud-kit"
         self.full_domain_name = (
             f"{self.subdomain_part}{self.stack_suffix}.{self.base_domain_name}"
         )
