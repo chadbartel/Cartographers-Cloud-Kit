@@ -54,11 +54,6 @@ class CartographersCloudKitStack(Stack):
         imported_home_ip_ssm_param_name = Fn.import_value(
             "home-ip-ssm-param-name"
         )
-
-        # Import Authorizer IAM Role ARN
-        imported_authorizer_role_arn = Fn.import_value(
-            "authorizer-lambda-role-arn"
-        )
         # endregion
 
         # region Cognito User Pool for Authentication
@@ -160,6 +155,33 @@ class CartographersCloudKitStack(Stack):
         # endregion
 
         # region Lambda Functions
+        # Create backend Lambda role
+        backend_lambda_role = self.create_iam_role(
+            construct_id="BackendLambdaRole",
+            name="cartographers-cloud-kit-backend-role",
+        ).role
+
+        # Grant permission to call AdminInitiateAuth on the user pool
+        backend_lambda_role.add_to_policy(
+            self.create_iam_policy_statement(
+                construct_id="BackendLambdaSsmPolicy",
+                actions=["ssm:GetParameter"],
+                resources=[
+                    Fn.join(
+                        ":",
+                        [
+                            "arn",
+                            "aws",
+                            "ssm",
+                            self.region,
+                            self.account,
+                            f"parameter/{imported_home_ip_ssm_param_name}",
+                        ]
+                    )
+                ],
+            ).statement
+        )
+
         # Backend Lambda Function
         cck_backend_lambda = self.create_lambda_function(
             construct_id="CartographersCloudKitLambda",
@@ -168,9 +190,11 @@ class CartographersCloudKitStack(Stack):
                 "API_PREFIX": self.api_prefix,
                 "S3_BUCKET_NAME": asset_bucket.bucket_name,
                 "DYNAMODB_TABLE_NAME": metadata_table.table_name,
+                "HOME_IP_SSM_PARAMETER_NAME": imported_home_ip_ssm_param_name,
             },
             memory_size=512,
             timeout=Duration.seconds(30),
+            role=backend_lambda_role,
             description="Cartographers Cloud Kit backend Lambda function",
         )
 
