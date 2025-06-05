@@ -153,6 +153,8 @@ class CartographersCloudKitStack(Stack):
             src_folder_path="cck-api-backend",
             environment={
                 "API_PREFIX": self.api_prefix,
+                "S3_BUCKET_NAME": asset_bucket.bucket_name,
+                "DYNAMODB_TABLE_NAME": metadata_table.table_name,
             },
             memory_size=512,
             timeout=Duration.seconds(30),
