@@ -192,7 +192,7 @@ class CartographersCloudKitStack(Stack):
                 "DYNAMODB_TABLE_NAME": metadata_table.table_name,
                 "HOME_IP_SSM_PARAMETER_NAME": imported_home_ip_ssm_param_name,
             },
-            memory_size=512,
+            memory_size=1024,
             timeout=Duration.seconds(30),
             role=backend_lambda_role,
             description="Cartographers Cloud Kit backend Lambda function",
