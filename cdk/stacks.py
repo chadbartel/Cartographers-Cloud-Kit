@@ -274,7 +274,7 @@ class CartographersCloudKitStack(Stack):
         )
 
         # 4. Map HTTP API to this custom domain
-        default_stage = cartographer_cloud_kit_api.default_stage
+        default_stage = rest_api.deployment_stage
         if not default_stage:
             raise ValueError(
                 "Default stage could not be found for API mapping. Ensure API has a default stage or specify one."
@@ -283,7 +283,7 @@ class CartographersCloudKitStack(Stack):
         _ = apigwv2.ApiMapping(
             self,
             "ApiMapping",
-            api=cartographer_cloud_kit_api,
+            api=rest_api,
             domain_name=apigw_custom_domain,
             stage=default_stage,  # Use the actual default stage object
         )
