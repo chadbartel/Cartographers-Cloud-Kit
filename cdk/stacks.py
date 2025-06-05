@@ -213,6 +213,21 @@ class CartographersCloudKitStack(Stack):
             authorizer=api_authorizer,
         ).api
 
+        # Define the Lambda integration for the REST API
+        lambda_integration = apigw.LambdaIntegration(
+            handler=cck_backend_lambda,
+            proxy=True,  # Enable proxy integration
+            allow_test_invoke=(
+                self.stack_suffix != ""
+            ),  # Allow test invocations in the API Gateway console
+        )
+
+        # Add {proxy+} resource integration to the REST API
+        rest_api.root.add_proxy(
+            default_integration=lambda_integration,
+        )
+        # endregion
+
         # Output the REST API URL
         CfnOutput(
             self,
