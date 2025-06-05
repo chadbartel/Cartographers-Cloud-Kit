@@ -14,6 +14,7 @@ from aws_cdk import (
     aws_dynamodb as dynamodb,
     Duration,
     CfnOutput,
+    Fn,
 )
 from constructs import Construct
 
@@ -46,6 +47,18 @@ class CartographersCloudKitStack(Stack):
         )
         self.api_prefix = self.node.try_get_context("api_prefix") or "/api/v1"
         self.auth_header_name = "x-cck-username-password"
+        # endregion
+
+        # region Import CloudFormation Outputs
+        # Import home IP SSM Parameter Name
+        imported_home_ip_ssm_param_name = Fn.import_value(
+            "home-ip-ssm-param-name"
+        )
+
+        # Import Authorizer IAM Role ARN
+        imported_authorizer_role_arn = Fn.import_value(
+            "authorizer-lambda-role-arn"
+        )
         # endregion
 
         # region Cognito User Pool for Authentication
