@@ -260,6 +260,25 @@ class CartographersCloudKitStack(Stack):
             ),  # Allow test invocations in the API Gateway console
         )
 
+        # Get the base resource for the API
+        api_base_resource = rest_api.root
+
+        # Add the prefix to the API base resource
+        if self.api_prefix:
+            # Split prefix into parts
+            path_parts = self.api_prefix.strip("/").split("/")
+            current_resource = api_base_resource
+
+            # Create nested resources for each part of the prefix
+            for path_part in path_parts:
+                # Check if resource already exists
+                existing_resource = current_resource.get_resource(path_part)
+                if existing_resource:
+                    current_resource = existing_resource
+                else:
+                    current_resource = current_resource.add_resource(path_part)
+            api_base_resource = current_resource  # This is now /api/v1 resource
+
         # Add {proxy+} resource integration to the REST API
         rest_api.root.add_proxy(
             default_integration=lambda_integration,
