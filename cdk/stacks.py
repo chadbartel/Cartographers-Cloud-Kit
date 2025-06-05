@@ -195,33 +195,42 @@ class CartographersCloudKitStack(Stack):
         )
         # endregion
 
-        # region HTTP API Gateway
-        # Create a custom HTTP API Gateway
-        cartographer_cloud_kit_api = CustomHttpApiGateway(
-            scope=self,
-            id="CartographersCloudKitHttpApi",
-            name="cartographers-cloud-kit-api",
-            stack_suffix=self.stack_suffix,
-            allow_methods=[apigwv2.CorsHttpMethod.ANY],
-            allow_headers=["Content-Type", "Authorization", "*"],
-            max_age=Duration.days(1),
-        ).http_api
-
-        # TODO: Create an authorizer for the HTTP API
-
-        # Create Lambda integration for the API
-        cartographer_cloud_kit_integration = (
-            apigwv2_integrations.HttpLambdaIntegration(
-                "CartographersCloudKitIntegration",
-                handler=cck_backend_lambda,
-            )
+        # region REST API Gateway
+        # Create an authorizer for the REST API
+        api_authorizer = self.create_token_authorizer(
+            construct_id="CartographersCloudKitAuthorizer",
+            name="cartographers-cloud-kit-authorizer",
+            handler=authorizer_lambda,
+            identity_source=apigw.IdentitySource.header(
+                self.auth_header_name
+            ),
         )
 
-        # Create proxy route for the API
-        cartographer_cloud_kit_api.add_routes(
-            path="/".join([self.api_prefix, "{proxy+}"]),
-            methods=[apigwv2.HttpMethod.ANY],
-            integration=cartographer_cloud_kit_integration,
+        # Create a custom REST API Gateway
+        rest_api = self.create_rest_api_gateway(
+            construct_id="CartographersCloudKitRestApi",
+            name="cartographers-cloud-kit-rest-api",
+            authorizer=api_authorizer,
+        ).api
+
+        # Output the REST API URL
+        CfnOutput(
+            self,
+            "RestApiUrlOutput",
+            value=rest_api.url,
+            description="REST API URL for Cartographers Cloud Kit",
+            export_name=f"cartographers-cloud-kit-rest-api-url{self.stack_suffix}",
+        )
+
+        # Output the auth header name
+        CfnOutput(
+            self,
+            "AuthHeaderNameOutput",
+            value=self.auth_header_name,
+            description="Header name for authentication in Cartographers Cloud Kit",
+            export_name=(
+                f"cartographers-cloud-kit-auth-header-name{self.stack_suffix}"
+            ),
         )
         # endregion
 
