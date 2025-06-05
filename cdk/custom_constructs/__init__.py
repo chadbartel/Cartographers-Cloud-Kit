@@ -23,8 +23,6 @@ The constructs included in this module are:
 from .api_custom_domain import ApiCustomDomain
 from .cognito_user_pool import CustomCognitoUserPool
 from .dynamodb_table import CustomDynamoDBTable
-from .http_api import CustomHttpApiGateway
-from .http_lambda_authorizer import CustomHttpLambdaAuthorizer
 from .iam_policy_statement import CustomIAMPolicyStatement
 from .iam_role import CustomIamRole
 from .lambda_function import CustomLambdaFromDockerImage
@@ -36,8 +34,6 @@ __all__ = [
     "ApiCustomDomain",
     "CustomCognitoUserPool",
     "CustomDynamoDBTable",
-    "CustomHttpApiGateway",
-    "CustomHttpLambdaAuthorizer",
     "CustomIAMPolicyStatement",
     "CustomIamRole",
     "CustomLambdaFromDockerImage",
