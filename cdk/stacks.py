@@ -6,9 +6,8 @@ from aws_cdk import (
     Stack,
     aws_iam as iam,
     aws_lambda as lambda_,
+    aws_apigateway as apigw,
     aws_apigatewayv2 as apigwv2,
-    aws_apigatewayv2_integrations as apigwv2_integrations,
-    aws_apigatewayv2_authorizers as apigwv2_authorizers,
     aws_certificatemanager as acm,
     aws_route53 as route53,
     aws_route53_targets as targets,
@@ -21,8 +20,7 @@ from constructs import Construct
 
 # Local Modules
 from cdk.custom_constructs import (
-    CustomHttpApiGateway,
-    CustomHttpLambdaAuthorizer,
+    CustomRestApi,
     CustomCognitoUserPool,
     CustomDynamoDBTable,
     CustomS3Bucket,
@@ -30,6 +28,7 @@ from cdk.custom_constructs import (
     CustomLambdaFromDockerImage,
     CustomIamRole,
     CustomIAMPolicyStatement,
+    CustomTokenAuthorizer,
 )
 
 
