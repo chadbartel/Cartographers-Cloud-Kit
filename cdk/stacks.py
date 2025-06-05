@@ -618,7 +618,7 @@ class CartographersCloudKitStack(Stack):
         data_trace_enabled: Optional[bool] = True,
         metrics_enabled: Optional[bool] = True,
         authorizer: Optional[apigw.IAuthorizer] = None,
-    ) -> CustomHttpApiGateway:
+    ) -> CustomRestApi:
         """Helper method to create a REST API Gateway.
 
         Parameters
@@ -638,10 +638,10 @@ class CartographersCloudKitStack(Stack):
 
         Returns
         -------
-        CustomHttpApiGateway
+        CustomRestApi
             The created REST API Gateway instance.
         """
-        custom_rest_api = CustomHttpApiGateway(
+        custom_rest_api = CustomRestApi(
             scope=self,
             id=construct_id,
             name=name,
