@@ -81,7 +81,7 @@ class CustomS3Bucket(Construct):
         # Create the S3 bucket
         self.bucket = s3.Bucket(
             self,
-            "DefaultBucket",
+            f"{name}-bucket",
             bucket_name=name,
             cors=cors_rules,
             versioned=versioned,

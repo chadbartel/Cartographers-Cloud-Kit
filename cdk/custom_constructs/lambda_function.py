@@ -85,7 +85,7 @@ class CustomLambdaFromDockerImage(Construct):
         # Build Lambda package using Docker
         self.function = lambda_.Function(
             self,
-            "DefaultFunction",
+            f"{name}-function",
             function_name=name,
             runtime=lambda_.Runtime.FROM_IMAGE,
             handler=lambda_.Handler.FROM_IMAGE,
