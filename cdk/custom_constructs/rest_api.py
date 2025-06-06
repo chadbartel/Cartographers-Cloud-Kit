@@ -43,6 +43,9 @@ class CustomRestApi(Construct):
         self.stack_suffix = stack_suffix or ""
         name = f"{name}{self.stack_suffix}"
 
+        # Set additional headers to empty list if not provided
+        additional_headers = additional_headers or []
+
         # Create the REST API
         self.api = apigateway.RestApi(
             scope=self,
