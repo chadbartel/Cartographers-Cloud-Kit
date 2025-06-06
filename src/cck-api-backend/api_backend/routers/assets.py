@@ -58,21 +58,26 @@ async def initiate_asset_upload(
     x_cck_username_password: Annotated[str, Header(...)],
     asset_data: AssetCreateRequest = Body(...),
 ) -> PresignedUrlResponse:
-    """Initiates the upload process for a new asset by generating a
+    """
+    Initiates the upload process for a new asset by generating a presigned URL.
 
-    Parameters
-    ----------
-    **x_cck_username_password** : str
-        Basic Auth header containing base64 encoded username and password.
-    **asset_data** : AssetCreateRequest
-        Data required to create a new asset, including file name, content type,
-        description, tags, and asset type.
+    This endpoint creates a unique asset ID, stores initial metadata in DynamoDB,
+    and returns a presigned S3 URL for direct file upload.
 
-    Returns
-    -------
-    PresignedUrlResponse
-        Contains the asset ID, S3 key, and a presigned URL for uploading the
-        asset file to S3.
+    **Parameters:**
+    - **x_cck_username_password**: Basic Auth header containing base64 encoded username and password
+    - **asset_data**: Data required to create a new asset, including:
+      - `file_name`: Original name of the file to upload
+      - `content_type`: MIME type of the file
+      - `description`: Optional description of the asset
+      - `tags`: List of tags for categorization
+      - `asset_type`: Type of asset (e.g., image, document, etc.)
+
+    **Returns:**
+    - `PresignedUrlResponse` containing:
+      - `asset_id`: Unique identifier for the created asset
+      - `s3_key`: S3 object key where the file will be stored
+      - `upload_url`: Presigned URL for uploading the file to S3
     """
     # Generate a unique asset ID
     asset_id = uuid.uuid4()
@@ -140,36 +145,31 @@ async def list_assets(
         None, description="Token for pagination"
     ),
 ) -> PaginatedAssetResponse:
-    """Lists assets owned by the authenticated user, with optional filtering by
-    tags and asset types.
+    """
+    Lists assets owned by the authenticated user with optional filtering.
 
-    Parameters
-    ----------
-    **x_cck_username_password** : str
-        Basic Auth header containing base64 encoded username and password.
-    **tags** : Optional[List[str]]
-        List of tags to filter assets by. If provided, assets must match these
-        tags.
-    **match_all_tags** : bool
-        If True, assets must match all provided tags. If False, assets can
-        match any of the provided tags.
-    **asset_types** : Optional[List[AssetType]]
-        List of asset types to filter assets by. If provided, assets must match
-        these types.
-    **match_all_types** : bool
-        If True, assets must match all provided asset types. If False, assets
-        can match any of the provided types.
-    **limit** : int
-        Maximum number of assets to return. Defaults to 20, with a maximum of
-        100.
-    **next_token** : Optional[str]
-        Token for pagination to retrieve the next set of results.
+    Retrieves a paginated list of assets belonging to the authenticated user,
+    with support for filtering by tags and asset types.
 
-    Returns
-    -------
-    PaginatedAssetResponse
-        A paginated response containing the list of assets, total count, and
-        next token for pagination.
+    **Parameters:**
+    - **x_cck_username_password**: Basic Auth header containing base64 encoded username and password
+    - **tags**: List of tags to filter assets by (optional)
+    - **match_all_tags**: If `true`, assets must match ALL provided tags; if `false`, assets match ANY tag
+    - **asset_types**: List of asset types to filter by (optional)
+    - **match_all_types**: If `true`, assets must match ALL provided types; if `false`, assets match ANY type
+    - **limit**: Maximum number of assets to return (1-100, default: 20)
+    - **next_token**: Pagination token for retrieving the next set of results
+
+    **Returns:**
+    - `PaginatedAssetResponse` containing:
+      - `assets`: List of asset metadata objects
+      - `total_count`: Total number of matching assets
+      - `next_token`: Token for retrieving the next page (if available)
+
+    **Filtering Logic:**
+    - When multiple filter criteria are provided, they are combined with AND logic
+    - Within each filter type (tags or asset_types), you can choose AND or OR logic
+    - Empty filter lists are ignored
     """
     # Extract username from Basic Auth header
     owner_id = extract_username_from_basic_auth(x_cck_username_password)
@@ -258,26 +258,24 @@ async def get_asset_details(
         ..., description="Unique identifier for the asset"
     ),
 ) -> AssetMetadataResponse:
-    """Retrieves metadata and a presigned download URL for an asset.
+    """
+    Retrieves detailed metadata and download URL for a specific asset.
 
-    Parameters
-    ----------
-    **x_cck_username_password** : str
-        Basic Auth header containing base64 encoded username and password.
-    **asset_id** : uuid.UUID
-        Unique identifier for the asset to retrieve.
+    Fetches complete asset metadata from DynamoDB and generates a presigned
+    download URL for accessing the asset file from S3.
 
-    Returns
-    -------
-    AssetMetadataResponse
-        Contains metadata about the asset, including a presigned URL for
-        downloading the asset file from S3.
+    **Parameters:**
+    - **x_cck_username_password**: Basic Auth header containing base64 encoded username and password
+    - **asset_id**: Unique UUID identifier for the asset to retrieve
 
-    Raises
-    ------
-    HTTPException
-        If the asset is not found or access is denied, a 404 Not Found error is
-        raised.
+    **Returns:**
+    - `AssetMetadataResponse` containing:
+      - Complete asset metadata (description, tags, timestamps, etc.)
+      - `download_url`: Presigned URL for downloading the asset file from S3
+      - File information (original filename, content type, S3 key)
+
+    **Errors:**
+    - **404 Not Found**: Asset doesn't exist or user doesn't have access rights
     """
     # Extract username from Basic Auth header
     owner_id = extract_username_from_basic_auth(x_cck_username_password)
@@ -321,29 +319,33 @@ async def update_asset_metadata(
     ),
     update_data: AssetUpdateRequest = Body(...),
 ) -> AssetMetadataResponse:
-    """Updates metadata for an existing asset in DynamoDB.
+    """
+    Updates metadata for an existing asset.
 
-    Parameters
-    ----------
-    **x_cck_username_password** : str
-        Basic Auth header containing base64 encoded username and password.
-    **asset_id** : uuid.UUID
-        Unique identifier for the asset to update.
-    **update_data** : AssetUpdateRequest
-        Data containing fields to update, such as description, tags, and
-        asset type.
+    Modifies asset metadata in DynamoDB with the provided update data.
+    Only specified fields will be updated; unspecified fields remain unchanged.
 
-    Returns
-    -------
-    AssetMetadataResponse
-        Contains the updated metadata of the asset, including the last modified
-        timestamp.
+    **Parameters:**
+    - **x_cck_username_password**: Basic Auth header containing base64 encoded username and password
+    - **asset_id**: Unique UUID identifier for the asset to update
+    - **update_data**: Request body containing fields to update:
+      - `description`: New description for the asset (optional)
+      - `tags`: New list of tags (optional)
+      - `asset_type`: New asset type (optional)
 
-    Raises
-    ------
-    HTTPException
-        If the asset is not found or access is denied, a 404 Not Found error is
-        raised.
+    **Returns:**
+    - `AssetMetadataResponse` containing the updated asset metadata with:
+      - All current asset information
+      - Updated `last_modified` timestamp
+      - Unchanged fields retain their original values
+
+    **Behavior:**
+    - Automatically updates the `last_modified` timestamp
+    - Only processes fields that are explicitly provided in the request
+    - Validates that the user owns the asset before allowing updates
+
+    **Errors:**
+    - **404 Not Found**: Asset doesn't exist or user doesn't have access rights
     """
     # Extract username from Basic Auth header
     owner_id = extract_username_from_basic_auth(x_cck_username_password)
@@ -381,6 +383,31 @@ async def delete_asset(
         ..., description="Unique identifier for the asset"
     ),
 ) -> None:
+    """
+    Permanently deletes an asset and its associated file.
+
+    Removes both the asset metadata from DynamoDB and the actual file from S3.
+    This operation cannot be undone.
+
+    **Parameters:**
+    - **x_cck_username_password**: Basic Auth header containing base64 encoded username and password
+    - **asset_id**: Unique UUID identifier for the asset to delete
+
+    **Behavior:**
+    1. Validates that the asset exists and belongs to the authenticated user
+    2. Removes the asset metadata from DynamoDB
+    3. Deletes the associated file from S3 storage
+    4. Returns HTTP 204 (No Content) on successful deletion
+
+    **Security:**
+    - Only the asset owner can delete their assets
+    - Asset existence is verified before deletion
+
+    **Errors:**
+    - **404 Not Found**: Asset doesn't exist, user doesn't have access, or S3 file is missing
+
+    ⚠️ **Warning**: This operation is irreversible. The asset and its file will be permanently deleted.
+    """
     # Extract username from Basic Auth header
     owner_id = extract_username_from_basic_auth(x_cck_username_password)
 
