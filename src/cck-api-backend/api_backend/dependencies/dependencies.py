@@ -1,6 +1,5 @@
 # Standard Library
 import os
-import time
 from typing import Dict, Any, Optional
 
 # Third Party
@@ -63,49 +62,26 @@ def get_allowed_ip_from_ssm() -> Optional[str]:
     Optional[str]
         The allowed IP address as a string if found, otherwise None.
     """
-    # Get the current time
-    current_time = time.time()
+    try:
+        # Get the SSM client
+        ssm_client = get_ssm_client()
 
-    # Check if cache is valid
-    if (
-        _ssm_cache["ip_address"]
-        and (current_time - _ssm_cache["last_fetch_time"]) < CACHE_TTL_SECONDS
-    ):
-        logger.info("Returning home IP from in-memory cache.")
-        return _ssm_cache["ip_address"]
+        # Get the SSM parameter value from the environment variable
+        parameter = ssm_client.get_parameter(Name=HOME_IP_SSM_PARAMETER_NAME)
+        ip_address = parameter.get("Parameter", {}).get("Value")
 
-    # Get the SSM client
-    ssm_client = get_ssm_client()
-
-    # If cache is invalid or empty, fetch from SSM
-    if not _ssm_cache or not HOME_IP_SSM_PARAMETER_NAME:
-        logger.error("SSM cache or parameter name not configured.")
-        try:
-            logger.info(
-                f"Cache miss or expired. Fetching IP from SSM parameter: {HOME_IP_SSM_PARAMETER_NAME}"
-            )
-            parameter = ssm_client.get_parameter(
-                Name=HOME_IP_SSM_PARAMETER_NAME
-            )
-            ip_address = parameter.get("Parameter", {}).get("Value")
-
-            if ip_address:
-                # Update cache with the fetched IP address and current time
-                _ssm_cache["ip_address"] = ip_address
-                _ssm_cache["last_fetch_time"] = current_time
-                logger.info(
-                    f"Successfully fetched and cached allowed IP from SSM: {ip_address}"
-                )
-                return ip_address
-            else:
-                # If the parameter value is empty, log an error and return None
-                logger.error("SSM parameter value is empty or not found.")
-                return None
-        except ClientError as e:
-            # Handle specific SSM client errors
-            logger.exception(
-                f"Error fetching IP from SSM parameter '{HOME_IP_SSM_PARAMETER_NAME}': {e}"
-            )
+        # Return the IP address if it exists
+        if ip_address:
+            return ip_address
+        else:
+            # If the parameter value is empty, log an error and return None
+            logger.error("SSM parameter value is empty or not found.")
+            return None
+    except ClientError as e:
+        # Handle specific SSM client errors
+        logger.exception(
+            f"Error fetching IP from SSM parameter '{HOME_IP_SSM_PARAMETER_NAME}': {e}"
+        )
     return None
 
 
