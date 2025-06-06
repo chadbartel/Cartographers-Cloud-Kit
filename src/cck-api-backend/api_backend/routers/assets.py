@@ -44,8 +44,8 @@ router = APIRouter(
 S3_BUCKET_NAME = os.environ.get(
     "S3_BUCKET_NAME", "cartographers-cloud-kit-assets"
 )
-DYNAMO_TABLE_NAME = os.environ.get(
-    "DYNAMO_TABLE_NAME", "cartographers-cloud-kit-metadata"
+DYNAMODB_TABLE_NAME = os.environ.get(
+    "DYNAMODB_TABLE_NAME", "cartographers-cloud-kit-metadata"
 )
 
 
@@ -115,7 +115,7 @@ async def initiate_asset_upload(
     }
 
     # Create a DynamoDB client instance
-    dynamo_client = DynamoDb(table_name=DYNAMO_TABLE_NAME)
+    dynamo_client = DynamoDb(table_name=DYNAMODB_TABLE_NAME)
 
     # Store the asset metadata in DynamoDB
     dynamo_client.put_item(item=asset_metadata)
@@ -219,7 +219,7 @@ async def list_assets(
     key_condition_expression = Key("owner_id").eq(owner_id)
 
     # Create a client instance for DynamoDB
-    dynamo_client = DynamoDb(table_name=DYNAMO_TABLE_NAME)
+    dynamo_client = DynamoDb(table_name=DYNAMODB_TABLE_NAME)
 
     # Query DynamoDB for assets
     response: Dict[str, Any] = dynamo_client.query(
@@ -281,7 +281,7 @@ async def get_asset_details(
     owner_id = extract_username_from_basic_auth(x_cck_username_password)
 
     # Create a client instance for DynamoDB
-    dynamo_client = DynamoDb(table_name=DYNAMO_TABLE_NAME)
+    dynamo_client = DynamoDb(table_name=DYNAMODB_TABLE_NAME)
 
     # Fetch asset metadata from DynamoDB
     asset_data = dynamo_client.query(
@@ -351,7 +351,7 @@ async def update_asset_metadata(
     owner_id = extract_username_from_basic_auth(x_cck_username_password)
 
     # Create a client instance for DynamoDB
-    dynamo_client = DynamoDb(table_name=DYNAMO_TABLE_NAME)
+    dynamo_client = DynamoDb(table_name=DYNAMODB_TABLE_NAME)
 
     # Dump the update data to a dictionary, excluding unset fields
     update_dict = update_data.model_dump(exclude_unset=True)
@@ -412,7 +412,7 @@ async def delete_asset(
     owner_id = extract_username_from_basic_auth(x_cck_username_password)
 
     # Create a client instance for DynamoDB
-    dynamo_client = DynamoDb(table_name=DYNAMO_TABLE_NAME)
+    dynamo_client = DynamoDb(table_name=DYNAMODB_TABLE_NAME)
 
     # Get the asset metadata to ensure it exists
     asset_data = dynamo_client.query(
