@@ -364,7 +364,7 @@ class S3Client:
     def generate_presigned_upload_url(
         self,
         object_key: str,
-        expiration: int = 900,
+        expiration: int = 3600,
         bucket_name: Optional[str] = None,
         content_type: Optional[str] = None,
     ) -> Optional[str]:
@@ -376,7 +376,7 @@ class S3Client:
             The key (path) in the S3 bucket where the file will be uploaded.
         expiration : int, optional
             The time in seconds for which the presigned URL is valid.
-            Defaults to 900 (15 minutes).
+            Defaults to 3600 (1 hour).
         bucket_name : Optional[str]
             The name of the S3 bucket. If not provided, the bucket_name
             specified during initialization will be used.
@@ -424,7 +424,7 @@ class S3Client:
     def generate_presigned_download_url(
         self,
         object_key: str,
-        expiration: int = 900,
+        expiration: int = 3600,
         bucket_name: Optional[str] = None,
     ) -> Optional[str]:
         """Generate a presigned URL for downloading a file from S3.
@@ -435,7 +435,7 @@ class S3Client:
             The key (path) in the S3 bucket of the file to be downloaded.
         expiration : int, optional
             The time in seconds for which the presigned URL is valid.
-            Defaults to 900 (15 minutes).
+            Defaults to 3600 (1 hour).
         bucket_name : Optional[str]
             The name of the S3 bucket. If not provided, the bucket_name
             specified during initialization will be used.
