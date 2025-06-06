@@ -136,8 +136,10 @@ class CartographersCloudKitStack(Stack):
         metadata_table = self.create_dynamodb_table(
             construct_id="AssetMetadataTable",
             name="cartographers-cloud-kit-metadata",
-            partition_key_name="asset_id",
+            partition_key_name="owner_id",
             partition_key_type=dynamodb.AttributeType.STRING,
+            sort_key_name="asset_id",
+            sort_key_type=dynamodb.AttributeType.STRING,
         )
 
         # Output metadata table name
