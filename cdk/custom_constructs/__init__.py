@@ -9,7 +9,6 @@ The constructs included in this module are:
 - `ApiCustomDomain`: Custom domain for API Gateway.
 - `CustomCognitoUserPool`: Custom Cognito User Pool.
 - `CustomDynamoDBTable`: Custom DynamoDB Table with additional configurations.
-- `CustomHttpApiGateway`: Custom HTTP API Gateway.
 - `CustomHttpLambdaAuthorizer`: Custom Lambda authorizer for HTTP APIs.
 - `CustomIAMPolicyStatement`: Custom IAM Policy Statement.
 - `CustomIamRole`: Custom IAM Role with additional configurations.
