@@ -63,9 +63,6 @@ def get_allowed_ip_from_ssm() -> Optional[str]:
     Optional[str]
         The allowed IP address as a string if found, otherwise None.
     """
-    # Use the global cache
-    global _ssm_cache
-
     # Get the current time
     current_time = time.time()
 
