@@ -100,6 +100,7 @@ async def initiate_asset_upload(
     # Store initial metadata of the asset
     timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
     asset_metadata = {
+        "owner_id": owner_id,
         "asset_id": str(asset_id),
         "description": asset_data.description,
         "tags": asset_data.tags,
@@ -111,7 +112,6 @@ async def initiate_asset_upload(
         "content_type": asset_data.content_type,
         "upload_timestamp": timestamp,
         "last_modified": timestamp,
-        "owner_id": owner_id,
     }
 
     # Create a DynamoDB client instance
@@ -285,8 +285,8 @@ async def get_asset_details(
 
     # Fetch asset metadata from DynamoDB
     asset_data = dynamo_client.query(
-        key_condition_expression=Key("asset_id").eq(str(asset_id)),
-        filter_expression=Attr("owner_id").eq(owner_id),
+        key_condition_expression=Attr("owner_id").eq(owner_id),
+        filter_expression=Key("asset_id").eq(str(asset_id)),
     ).get("Items", [])
 
     # If no asset data found, raise 404 Not Found
@@ -363,7 +363,7 @@ async def update_asset_metadata(
 
     # Update the asset metadata in DynamoDB
     updated_asset = dynamo_client.update_item(
-        key={"asset_id": str(asset_id)},
+        key={"owner_id": owner_id, "asset_id": str(asset_id)},
         update_expression="SET "
         + ", ".join(f"{k} = :{k}" for k in update_dict.keys()),
         expression_attribute_values={
@@ -416,8 +416,8 @@ async def delete_asset(
 
     # Get the asset metadata to ensure it exists
     asset_data = dynamo_client.query(
-        key_condition_expression=Key("asset_id").eq(str(asset_id)),
-        filter_expression=Attr("owner_id").eq(owner_id),
+        key_condition_expression=Attr("owner_id").eq(owner_id),
+        filter_expression=Key("asset_id").eq(str(asset_id)),
     ).get("Items", [])
 
     # If no asset data found, raise 404 Not Found
@@ -428,7 +428,9 @@ async def delete_asset(
         )
 
     # Delete the asset metadata from DynamoDB
-    dynamo_client.delete_item(key={"asset_id": str(asset_id)})
+    dynamo_client.delete_item(
+        key={"owner_id": owner_id, "asset_id": str(asset_id)}
+    )
 
     # Create a client instance for S3
     s3_client = S3Client(bucket_name=S3_BUCKET_NAME)
