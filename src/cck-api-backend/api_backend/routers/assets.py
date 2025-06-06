@@ -52,7 +52,7 @@ DYNAMODB_TABLE_NAME = os.environ.get(
 @router.post(
     "/initiate-upload",
     response_model=PresignedUrlResponse,
-    status_code=status.HTTP_201_CREATED,
+    status_code=status.HTTP_200_OK,
 )
 async def initiate_asset_upload(
     x_cck_username_password: Annotated[str, Header(...)],
