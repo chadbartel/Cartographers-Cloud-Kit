@@ -2,7 +2,7 @@
 from enum import Enum
 
 
-class ContentType(Enum, str):
+class ContentType(str, Enum):
     IMAGE_PNG = "image/png"
     IMAGE_JPEG = "image/jpeg"
     APPLICATION_PDF = "application/pdf"
@@ -13,7 +13,7 @@ class ContentType(Enum, str):
     VIDEO_MP4 = "video/mp4"
 
 
-class AssetType(Enum, str):
+class AssetType(str, Enum):
     npc = "NPC"
     location = "Location"
     item = "Item"
