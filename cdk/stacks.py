@@ -93,28 +93,11 @@ class CartographersCloudKitStack(Stack):
         # endregion
 
         # region S3 Bucket for Static Assets
-        # Create CORS rules for the S3 bucket
-        asset_bucket_cors_rules = [
-            self.create_cors_rule(
-                construct_id="AssetBucketCorsRule",
-                allowed_methods=[
-                    s3.HttpMethods.GET,
-                    s3.HttpMethods.PUT,
-                    s3.HttpMethods.POST,
-                    s3.HttpMethods.HEAD,
-                ],
-                allowed_origins=["*"],
-                allowed_headers=["*"],
-                max_age=3000,
-            )
-        ]
-
         # Create a custom S3 bucket for static assets
         asset_bucket = self.create_s3_bucket(
             construct_id="CartographersCloudKitAssetBucket",
             name="cartographers-cloud-kit-assets",
             versioned=True,
-            cors_rules=asset_bucket_cors_rules,
         )
 
         # Output asset bucket name
@@ -439,7 +422,6 @@ class CartographersCloudKitStack(Stack):
         construct_id: str,
         name: str,
         versioned: Optional[bool] = False,
-        cors_rules: Optional[List[s3.CorsRule]] = None,
     ) -> s3.Bucket:
         """Helper method to create an S3 bucket with a specific name and versioning.
 
@@ -465,7 +447,6 @@ class CartographersCloudKitStack(Stack):
             name=name,
             stack_suffix=self.stack_suffix,
             versioned=versioned,
-            cors_rules=cors_rules
         )
         return custom_s3_bucket.bucket
 

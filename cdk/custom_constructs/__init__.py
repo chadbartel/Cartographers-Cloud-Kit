@@ -15,7 +15,6 @@ The constructs included in this module are:
 - `CustomLambdaFromDockerImage`: Custom Lambda function created from a Docker image.
 - `CustomRestApi`: Custom REST API with additional configurations.
 - `CustomS3Bucket`: Custom S3 Bucket with additional configurations.
-- `CustomCorsRule`: Custom CORS rule for S3 Buckets.
 - `CustomTokenAuthorizer`: Custom Token Authorizer for API Gateway.
 """
 
@@ -26,7 +25,7 @@ from .iam_policy_statement import CustomIAMPolicyStatement
 from .iam_role import CustomIamRole
 from .lambda_function import CustomLambdaFromDockerImage
 from .rest_api import CustomRestApi
-from .s3_bucket import CustomS3Bucket, CustomCorsRule
+from .s3_bucket import CustomS3Bucket
 from .token_authorizer import CustomTokenAuthorizer
 
 __all__ = [
@@ -38,6 +37,5 @@ __all__ = [
     "CustomLambdaFromDockerImage",
     "CustomRestApi",
     "CustomS3Bucket",
-    "CustomCorsRule",
     "CustomTokenAuthorizer",
 ]
