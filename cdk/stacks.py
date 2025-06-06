@@ -175,7 +175,7 @@ class CartographersCloudKitStack(Stack):
                             "ssm",
                             self.region,
                             self.account,
-                            f"parameter/{imported_home_ip_ssm_param_name}",
+                            f"parameter{imported_home_ip_ssm_param_name}",
                         ]
                     )
                 ],
