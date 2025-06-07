@@ -36,8 +36,8 @@ class AssetCreateRequest(AssetBase):
     file_name: str = Field(
         ..., description="Original name of the file to be uploaded"
     )
-    content_type: ContentType = Field(
-        ..., description="MIME type of the file, e.g., image/png"
+    content_type: Optional[ContentType] = Field(
+        None, description="MIME type of the file, e.g., image/png"
     )
 
 
