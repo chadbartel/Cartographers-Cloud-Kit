@@ -238,6 +238,9 @@ async def list_assets(
     )
     filtered_assets = response.get("Items", [])
 
+    # TODO: REMOVE THIS AFTER TESTING
+    logger.info(f"Response from DynamoDB: {response}")
+
     # Get total count
     total_count: int = response.get("Count", 0)
 
