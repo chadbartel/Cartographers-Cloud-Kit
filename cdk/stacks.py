@@ -24,7 +24,6 @@ from cdk.custom_constructs import (
     CustomCognitoUserPool,
     CustomDynamoDBTable,
     CustomS3Bucket,
-    CustomCorsRule,
     CustomLambdaFromDockerImage,
     CustomIamRole,
     CustomIAMPolicyStatement,
@@ -449,46 +448,6 @@ class CartographersCloudKitStack(Stack):
             versioned=versioned,
         )
         return custom_s3_bucket.bucket
-
-    def create_cors_rule(
-        self,
-        construct_id: str,
-        allowed_origins: List[str],
-        allowed_methods: Optional[List[s3.HttpMethods]] = None,
-        allowed_headers: Optional[List[str]] = None,
-        max_age: Optional[int] = None,
-    ) -> s3.CorsRule:
-        """Helper method to create a CORS rule for S3 buckets.
-
-        Parameters
-        ----------
-        construct_id : str
-            The ID of the construct.
-        allowed_origins : List[str]
-            List of allowed origins for CORS.
-        allowed_methods : Optional[List[s3.HttpMethods]], optional
-            List of allowed HTTP methods, by default None
-        allowed_headers : Optional[List[str]], optional
-            List of allowed headers, by default None
-        max_age : Optional[int], optional
-            Maximum age in seconds for the CORS preflight response, by default
-            None
-
-        Returns
-        -------
-        s3.CorsRule
-            The created CORS rule instance.
-        """
-        custom_cors_rule = CustomCorsRule(
-            scope=self,
-            id=construct_id,
-            allowed_origins=allowed_origins,
-            allowed_methods=allowed_methods or [s3.HttpMethods.GET],
-            allowed_headers=allowed_headers or ["*"],
-            max_age=max_age,
-        )
-
-        return custom_cors_rule.rule
 
     def create_dynamodb_table(
         self,
