@@ -245,7 +245,7 @@ async def list_assets(
     total_count: int = response.get("Count", 0)
 
     # Extract next token for pagination
-    new_next_token: Optional[Dict[str, Any]] = response.get("LastEvaluatedKey")
+    new_next_token: Optional[str] = response.get("LastEvaluatedKey")
 
     # Convert DynamoDB items to AssetMetadataResponse models
     paginated_assets = [
