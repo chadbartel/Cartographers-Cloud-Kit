@@ -1,6 +1,7 @@
 # Standard Library
 import os
 import uuid
+import base64
 import datetime
 from typing import Optional, Dict, Any, Annotated, List
 
@@ -176,6 +177,17 @@ async def list_assets(
     # Extract username from Basic Auth header
     owner_id = extract_username_from_basic_auth(x_cck_username_password)
 
+    # If next_token is provided, decode it to get the last evaluated key
+    if next_token:
+        try:
+            next_token = base64.b64decode(next_token).decode("utf-8")
+        except (ValueError, TypeError) as e:
+            logger.error(f"Invalid next_token: {e}")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid pagination token",
+            )
+
     # Construct a filter expression based on the provided tag(s)
     tag_filter_expression = None
     if tags:
@@ -245,7 +257,13 @@ async def list_assets(
     total_count: int = response.get("Count", 0)
 
     # Extract next token for pagination
-    new_next_token: Optional[str] = response.get("LastEvaluatedKey")
+    last_evaluated_key = response.get("LastEvaluatedKey")
+    if last_evaluated_key:
+        new_next_token: Optional[str] = base64.b64encode(
+            last_evaluated_key
+        ).decode("utf-8")
+    else:
+        new_next_token = None
 
     # Convert DynamoDB items to AssetMetadataResponse models
     paginated_assets = [
