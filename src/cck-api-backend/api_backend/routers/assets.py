@@ -186,7 +186,9 @@ async def list_assets(
                 tag_filter_expression &= Attr("tags").contains(tag)
         else:
             # Match any of the tags provided
-            tag_filter_expression = Attr("tags").is_in(tags)
+            tag_filter_expression = Attr("tags").contains(tags[0])
+            for tag in tags[1:]:
+                tag_filter_expression |= Attr("tags").contains(tag)
 
     # Construct a filter expression based on the provided asset type
     asset_type_filter_expression = None
@@ -202,9 +204,13 @@ async def list_assets(
                 )
         else:
             # Match any of the asset types provided
-            asset_type_filter_expression = Attr("asset_type").is_in(
-                [at.value for at in asset_types]
+            asset_type_filter_expression = Attr("asset_type").eq(
+                asset_types[0].value
             )
+            for asset_type in asset_types[1:]:
+                asset_type_filter_expression |= Attr("asset_type").eq(
+                    asset_type.value
+                )
 
     # Combine all filter expressions
     combined_filter_expression = None
