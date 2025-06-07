@@ -1,7 +1,7 @@
 # Standard Library
 import uuid
 import datetime
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 
 # Third Party
 from pydantic import BaseModel, Field, HttpUrl, ConfigDict
@@ -112,6 +112,6 @@ class PaginatedAssetResponse(BaseModel):
     total_count: int = Field(
         ..., description="Total number of assets available"
     )
-    next_token: Optional[str] = Field(
+    next_token: Optional[Dict[str, Any]] = Field(
         None, description="Token for the next page of results"
     )
