@@ -234,7 +234,7 @@ async def list_assets(
         key_condition_expression=key_condition_expression,
         filter_expression=combined_filter_expression,
         limit=limit,
-        exclusive_start_key={"S": next_token} if next_token else None,
+        exclusive_start_key={"asset_id": next_token} if next_token else None,
     )
     filtered_assets = response.get("Items", [])
 
@@ -245,7 +245,9 @@ async def list_assets(
     total_count: int = response.get("Count", 0)
 
     # Extract next token for pagination
-    new_next_token: Optional[str] = response.get("LastEvaluatedKey")
+    new_next_token: Optional[str] = response.get("LastEvaluatedKey", {}).get(
+        "asset_id", None
+    )
 
     # Convert DynamoDB items to AssetMetadataResponse models
     paginated_assets = [
