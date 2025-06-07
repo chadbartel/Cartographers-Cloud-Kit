@@ -59,7 +59,7 @@ class S3Client:
             specified during initialization will be used.
         extra_args : Optional[Dict[str, str]]
             Additional arguments to pass to the upload operation, such as
-            ContentType or ACL. Defaults to None.
+            ACL. Defaults to None.
 
         Returns
         -------
@@ -366,7 +366,6 @@ class S3Client:
         object_key: str,
         expiration: int = 3600,
         bucket_name: Optional[str] = None,
-        content_type: Optional[str] = None,
     ) -> Optional[str]:
         """Generate a presigned URL for uploading a file to S3.
 
@@ -380,9 +379,6 @@ class S3Client:
         bucket_name : Optional[str]
             The name of the S3 bucket. If not provided, the bucket_name
             specified during initialization will be used.
-        content_type : Optional[str]
-            The MIME type of the file to be uploaded. If provided, the
-            presigned URL will enforce this content type.
 
         Returns
         -------
@@ -396,8 +392,6 @@ class S3Client:
         try:
             # Prepare parameters for presigned URL generation
             params = {"Bucket": bucket_name, "Key": object_key}
-            if content_type:
-                params["ContentType"] = content_type
 
             # Generate the presigned URL
             presigned_url = self._client.generate_presigned_url(

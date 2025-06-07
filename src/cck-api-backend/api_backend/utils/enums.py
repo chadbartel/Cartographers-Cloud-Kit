@@ -2,17 +2,6 @@
 from enum import Enum
 
 
-class ContentType(str, Enum):
-    IMAGE_PNG = "image/png"
-    IMAGE_JPEG = "image/jpeg"
-    APPLICATION_PDF = "application/pdf"
-    TEXT_PLAIN = "text/plain"
-    APPLICATION_JSON = "application/json"
-    APPLICATION_ZIP = "application/zip"
-    AUDIO_MPEG = "audio/mpeg"
-    VIDEO_MP4 = "video/mp4"
-
-
 class AssetType(str, Enum):
     npc = "NPC"
     location = "Location"

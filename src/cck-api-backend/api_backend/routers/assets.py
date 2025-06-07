@@ -68,7 +68,6 @@ async def initiate_asset_upload(
     - **x_cck_username_password**: Basic Auth header containing base64 encoded username and password
     - **asset_data**: Data required to create a new asset, including:
       - `file_name`: Original name of the file to upload
-      - `content_type`: MIME type of the file
       - `description`: Optional description of the asset
       - `tags`: List of tags for categorization
       - `asset_type`: Type of asset (e.g., image, document, etc.)
@@ -95,9 +94,6 @@ async def initiate_asset_upload(
     presigned_url_params = {
         "object_key": s3_key,
     }
-    if asset_data.content_type:
-        # Include content type if provided
-        presigned_url_params["content_type"] = asset_data.content_type
 
     # Generate a presigned URL for uploading the asset
     upload_url = s3_client.generate_presigned_upload_url(
@@ -116,7 +112,6 @@ async def initiate_asset_upload(
         ),
         "s3_key": s3_key,
         "original_file_name": asset_data.file_name,
-        "content_type": asset_data.content_type,
         "upload_timestamp": timestamp,
         "last_modified": timestamp,
     }
@@ -279,7 +274,7 @@ async def get_asset_details(
     - `AssetMetadataResponse` containing:
       - Complete asset metadata (description, tags, timestamps, etc.)
       - `download_url`: Presigned URL for downloading the asset file from S3
-      - File information (original filename, content type, S3 key)
+      - File information (original filename, S3 key, etc.)
 
     **Errors:**
     - **404 Not Found**: Asset doesn't exist or user doesn't have access rights

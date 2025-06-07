@@ -7,7 +7,7 @@ from typing import List, Optional
 from pydantic import BaseModel, Field, HttpUrl, ConfigDict
 
 # Local Modules
-from api_backend.utils import ContentType, AssetType
+from api_backend.utils import AssetType
 
 
 # --- Base Models ---
@@ -35,9 +35,6 @@ class AssetCreateRequest(AssetBase):
 
     file_name: str = Field(
         ..., description="Original name of the file to be uploaded"
-    )
-    content_type: Optional[ContentType] = Field(
-        None, description="MIME type of the file, e.g., image/png"
     )
 
 
@@ -70,7 +67,6 @@ class AssetMetadataResponse(AssetBase):
     original_file_name: str = Field(
         ..., description="Original uploaded file name"
     )
-    content_type: ContentType = Field(..., description="MIME type of the file")
     upload_timestamp: datetime.datetime = Field(
         ..., description="Timestamp of when the asset was uploaded/created"
     )
