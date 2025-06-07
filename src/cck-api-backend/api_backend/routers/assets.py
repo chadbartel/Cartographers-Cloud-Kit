@@ -91,10 +91,17 @@ async def initiate_asset_upload(
     # Create S3 client instance
     s3_client = S3Client(bucket_name=S3_BUCKET_NAME)
 
+    # Create parameters for presigned URL generation
+    presigned_url_params = {
+        "object_key": s3_key,
+    }
+    if asset_data.content_type:
+        # Include content type if provided
+        presigned_url_params["content_type"] = asset_data.content_type
+
     # Generate a presigned URL for uploading the asset
     upload_url = s3_client.generate_presigned_upload_url(
-        object_key=s3_key,
-        content_type=asset_data.content_type,
+        **presigned_url_params
     )
 
     # Store initial metadata of the asset
