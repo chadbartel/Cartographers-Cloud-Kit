@@ -6,6 +6,7 @@ from unittest.mock import patch
 import pytest
 from moto import mock_aws
 
+# Local Modules
 # Local imports
 from api_authorizer.utils import (
     get_cognito_client,
@@ -26,7 +27,7 @@ def test_environment_variables():
 def test_get_cognito_client_creates_new_client():
     """Test that get_cognito_client creates a new client when none exists."""
     # Arrange
-    # Third Party
+    # Local Modules
     import api_authorizer.utils as utils_module
 
     utils_module.cognito_client = None
@@ -44,7 +45,7 @@ def test_get_cognito_client_creates_new_client():
 def test_get_cognito_client_reuses_existing_client():
     """Test that get_cognito_client reuses an existing client."""
     # Arrange
-    # Third Party
+    # Local Modules
     import api_authorizer.utils as utils_module
 
     utils_module.cognito_client = None
@@ -61,7 +62,7 @@ def test_get_cognito_client_reuses_existing_client():
 def test_get_cognito_client_handles_exception(mock_boto3_client):
     """Test that get_cognito_client properly handles and re-raises exceptions."""
     # Arrange
-    # Third Party
+    # Local Modules
     import api_authorizer.utils as utils_module
 
     utils_module.cognito_client = None
@@ -188,7 +189,7 @@ def test_generate_policy_with_empty_context():
 @pytest.fixture(autouse=True)
 def reset_cognito_client():
     """Reset the global cognito_client before each test."""
-    # Third Party
+    # Local Modules
     import api_authorizer.utils as utils_module
 
     utils_module.cognito_client = None
