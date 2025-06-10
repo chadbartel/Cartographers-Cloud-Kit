@@ -160,4 +160,4 @@ def lambda_handler(
         logger.exception(
             f"Unexpected error during token validation for user (if known) or token: {e}"
         )
-        raise Exception("Una#uthorized")
+        raise Exception("Unauthorized")
