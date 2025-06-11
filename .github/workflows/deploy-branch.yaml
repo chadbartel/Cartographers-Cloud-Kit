@@ -248,6 +248,12 @@ jobs:
           virtualenvs-path: .venv
           installer-parallel: true
 
+      - name: Recreate Virtual Environment
+        run: |
+          rm -rf .venv
+          poetry config virtualenvs.in-project true
+          poetry install --no-interaction --no-root
+
       # ------------------------------
       # Load Cached Dependencies
       # ------------------------------
