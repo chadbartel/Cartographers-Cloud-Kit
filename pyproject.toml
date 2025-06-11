@@ -28,6 +28,7 @@ pylint = "^3.3.7"
 flake8 = "^7.2.0"
 moto = "^5.1.5"
 pytest = "^8.3.5"
+pytest-asyncio = "^0.23.2"
 pytest-cov = "^6.1.1"
 coverage = "^7.8.2"
 nox = "^2025.5.1"
@@ -83,6 +84,7 @@ omit = [
 minversion = "6.0"
 pythonpath = ["src"]
 addopts = "-ra -sql --junitxml=junit.xml"
+asyncio_mode = "auto"
 markers = [
     "slow: marks tests as slow (select with '-m \"not slow\"')",
     "serial"
