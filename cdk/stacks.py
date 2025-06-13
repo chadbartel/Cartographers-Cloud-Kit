@@ -39,13 +39,13 @@ class CartographersCloudKitStack(Stack):
 
         # region Stack Suffix and Subdomain Configuration
         self.stack_suffix = (stack_suffix if stack_suffix else "").lower()
-        self.base_domain_name = "thatsmidnight.com"
-        self.subdomain_part = "cartographers-cloud-kit"
+        self.base_domain_name = self.node.try_get_context("domain_name")
+        self.subdomain_part = self.node.try_get_context("subdomain_name")
         self.full_domain_name = (
             f"{self.subdomain_part}{self.stack_suffix}.{self.base_domain_name}"
         )
-        self.api_prefix = self.node.try_get_context("api_prefix") or "/api/v1"
-        self.auth_header_name = "x-cck-username-password"
+        self.api_prefix = self.node.try_get_context("api_prefix")
+        self.auth_header_name = self.node.try_get_context("auth_header_name")
         # endregion
 
         # region Import CloudFormation Outputs
