@@ -21,8 +21,7 @@
     "@aws-cdk/aws-iam:minimizePolicies": true,
     "@aws-cdk/core:stackRelativeExports": true,
     "@aws-cdk/aws-lambda:recognizeLayerVersion": true,
-    "@aws-cdk/core:bootstrapQualifier": "arcaneqs",
-    "api_prefix": "/api/v1"
+    "@aws-cdk/core:bootstrapQualifier": "arcaneqs"
   },
   "build": null,
   "output": "cdk.out",
