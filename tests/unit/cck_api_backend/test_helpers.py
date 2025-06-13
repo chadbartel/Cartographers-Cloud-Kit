@@ -1,5 +1,3 @@
-"""Unit tests for api_backend.utils.helpers module."""
-
 # Standard Library
 import base64
 from unittest.mock import patch

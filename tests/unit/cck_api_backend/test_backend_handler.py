@@ -1,8 +1,5 @@
-"""Unit tests for cck-api-backend handler.py module."""
-
 # Standard Library
 import os
-from typing import Any, Dict
 from unittest.mock import MagicMock, patch
 
 # Third Party

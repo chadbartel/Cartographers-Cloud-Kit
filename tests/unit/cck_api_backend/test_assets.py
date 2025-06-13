@@ -1,19 +1,13 @@
-"""Unit tests for the assets router module."""
-
 # Standard Library
 import os
 import uuid
 import datetime
-from unittest.mock import Mock, patch, MagicMock
-from typing import Any, Dict, List
+from unittest.mock import Mock, patch
 
 # Third Party
 import pytest
-import boto3
 from fastapi import HTTPException, status
-from fastapi.testclient import TestClient
-from moto import mock_aws
-from boto3.dynamodb.conditions import Attr, Key
+from boto3.dynamodb.conditions import Key
 
 # Local Modules
 from api_backend.routers.assets import (

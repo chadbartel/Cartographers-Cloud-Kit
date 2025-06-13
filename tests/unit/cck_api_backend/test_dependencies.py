@@ -1,5 +1,3 @@
-"""Unit tests for the dependencies module."""
-
 # Standard Library
 import os
 from unittest.mock import Mock, patch

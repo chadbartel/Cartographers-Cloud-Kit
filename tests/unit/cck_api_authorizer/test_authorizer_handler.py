@@ -1,6 +1,5 @@
 # Standard Library
 import base64
-import binascii
 from typing import Any, Dict
 from unittest.mock import MagicMock, patch
 
