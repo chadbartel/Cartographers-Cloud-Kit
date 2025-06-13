@@ -348,13 +348,12 @@ class DynamoDb:
             If there is an error while querying the table.
         """
         try:
-            # Check if exclusive start key is provided for pagination
-            if exclusive_start_key:
-                # If so, add it to the query parameters
-                query_params = {"ExclusiveStartKey": exclusive_start_key}
-
             # Build query parameters with required key condition
             query_params = {"KeyConditionExpression": key_condition_expression}
+
+            # Add optional exclusive start key for pagination
+            if exclusive_start_key:
+                query_params["ExclusiveStartKey"] = exclusive_start_key
 
             # Add optional filter expression for additional filtering
             if filter_expression is not None:
