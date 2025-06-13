@@ -1,0 +1,7 @@
+{
+  "stack_name_prefix": "cartographers-cloud-kit-stack",
+  "api_prefix": "/api/v1",
+  "domain_name": "thatsmidnight.com",
+  "subdomain_name": "cartographers-cloud-kit",
+  "auth_header_name": "x-cck-username-password"
+}
