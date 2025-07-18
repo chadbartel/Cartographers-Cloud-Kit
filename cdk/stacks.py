@@ -302,7 +302,7 @@ class CartographersCloudKitStack(Stack):
         # endregion
 
         # region Custom Domain Setup for API Gateway
-        # 1. Look up existing hosted zone for "thatsmidnight.com"
+        # 1. Look up existing hosted zone for "chadbartel.com"
         hosted_zone = route53.HostedZone.from_lookup(
             self,
             "CartographersCloudKitHostedZone",
